@@ -27,3 +27,6 @@ This folder follows the open Agent Skills format. Compatible agents need to supp
 
 ## License
 Add a license file if you plan to publish or redistribute this skill. Do not imply that third-party trademarks or materials are owned by Being Marketive.
+
+# For more information visit this site: 
+https://www.beingmarketive.in/
