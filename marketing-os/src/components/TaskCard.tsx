@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { Check, Clock, Link2, Repeat, AlarmClockOff } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { CHANNEL_META, PRIORITY_META } from '../data/channels';
 import { prettyDate, today } from '../lib/dates';
 import type { Project, Task } from '../types';
@@ -14,6 +14,7 @@ export function TaskCard({ task, project, showDate = true }: { task: Task; proje
   const actions = useTaskActions();
   const x = useMotionValue(0);
   const [armed, setArmed] = useState<'done' | 'snooze' | null>(null);
+  const dragging = useRef(false);
   const doneOpacity = useTransform(x, [0, THRESHOLD], [0, 1]);
   const snoozeOpacity = useTransform(x, [-THRESHOLD, 0], [1, 0]);
   const subDone = task.subtasks.filter((s) => s.done).length;
@@ -41,6 +42,9 @@ export function TaskCard({ task, project, showDate = true }: { task: Task; proje
         dragDirectionLock
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.7}
+        onDragStart={() => {
+          dragging.current = true;
+        }}
         onDrag={(_, info) => {
           const a = info.offset.x > THRESHOLD ? 'done' : info.offset.x < -THRESHOLD ? 'snooze' : null;
           if (a !== armed) {
@@ -50,6 +54,7 @@ export function TaskCard({ task, project, showDate = true }: { task: Task; proje
         }}
         onDragEnd={(_, info) => {
           setArmed(null);
+          window.setTimeout(() => (dragging.current = false), 80);
           if (info.offset.x > THRESHOLD) finish('done');
           else if (info.offset.x < -THRESHOLD) finish('snooze');
         }}
@@ -60,6 +65,7 @@ export function TaskCard({ task, project, showDate = true }: { task: Task; proje
           aria-label={isDone ? 'Done' : 'Mark done'}
           onClick={(e) => {
             e.stopPropagation();
+            if (dragging.current) return;
             if (!isDone) finish('done');
           }}
           className="grid h-8 w-8 shrink-0 place-items-center self-center rounded-full border-2 transition active:scale-90"
@@ -68,7 +74,7 @@ export function TaskCard({ task, project, showDate = true }: { task: Task; proje
           {isDone && <Check size={16} className="text-white" strokeWidth={3} />}
         </button>
 
-        <button className="min-w-0 flex-1 text-left" onClick={() => openTask(task.id)}>
+        <button className="min-w-0 flex-1 text-left" onClick={() => !dragging.current && openTask(task.id)}>
           <div className={`text-[15px] font-semibold leading-snug ${isDone ? 'faint line-through' : ''}`}>{task.title}</div>
           <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs muted">
             {project && (

@@ -1,12 +1,72 @@
+import { useLiveQuery } from 'dexie-react-hooks';
+import { useEffect, useState } from 'react';
 import { Sheet } from './Sheet';
+import { PlaybookView } from './PlaybookView';
+import { AiBox } from './AiBox';
 import { useUI } from '../lib/ui';
+import { db } from '../db/db';
+import { PLAYBOOKS, fillPrompt, findPlaybook } from '../data/playbooks';
+import { getIndustry } from '../data/industries';
+import { updateTask } from '../lib/engine';
+import type { Playbook } from '../types';
 
-/** Phase 2: playbook for the task. */
 export function StuckSheet() {
   const { stuckTaskId, openStuck } = useUI();
+  const task = useLiveQuery(() => (stuckTaskId ? db.tasks.get(stuckTaskId) : undefined), [stuckTaskId]);
+  const project = useLiveQuery(() => (task?.projectId ? db.projects.get(task.projectId) : undefined), [task?.projectId]);
+  const [override, setOverride] = useState<Playbook | null>(null);
+
+  useEffect(() => setOverride(null), [stuckTaskId]);
+
+  const playbook = override ?? (task ? findPlaybook(task) : undefined) ?? PLAYBOOKS[0];
+  const prompt = task
+    ? fillPrompt(playbook.aiPrompt, {
+        project: project?.name ?? 'my brand',
+        industry: getIndustry(project?.industryId)?.name ?? 'digital marketing',
+        task: task.title,
+        website: project?.website ?? '[website]',
+        notes: [project?.notes, task.notes].filter(Boolean).join(' | ') || 'none'
+      })
+    : '';
+
   return (
-    <Sheet open={!!stuckTaskId} onClose={() => openStuck(null)} title="Main stuck hoon">
-      <p className="muted py-6 text-center">Playbooks Phase 2 mein aa rahe hain.</p>
+    <Sheet
+      open={!!stuckTaskId}
+      onClose={() => openStuck(null)}
+      full
+      title={
+        <span>
+          🛟 Main stuck hoon <span className="faint text-sm font-medium">· {playbook.emoji} {playbook.name}</span>
+        </span>
+      }
+    >
+      {task && (
+        <>
+          <div className="mb-4 rounded-2xl p-3 text-sm" style={{ background: 'var(--input)' }}>
+            <div className="faint text-xs font-semibold uppercase">Task</div>
+            <div className="font-semibold">{task.title}</div>
+            {project && <div className="faint text-xs">{project.name} · {getIndustry(project.industryId)?.name}</div>}
+          </div>
+          <PlaybookView playbook={playbook} />
+          <div className="mt-5">
+            <AiBox
+              prompt={prompt}
+              title={`AI: ${playbook.name} for ${project?.name ?? 'this task'}`}
+              onSaveToNotes={(text) => updateTask(task.id, { notes: (task.notes ? task.notes + '\n\n' : '') + text })}
+            />
+          </div>
+          <label className="mt-5 block">
+            <span className="label">Galat playbook? Doosra chuno</span>
+            <select className="input" value={playbook.id} onChange={(e) => setOverride(PLAYBOOKS.find((p) => p.id === e.target.value) ?? null)}>
+              {PLAYBOOKS.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.emoji} {p.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      )}
     </Sheet>
   );
 }
