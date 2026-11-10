@@ -92,7 +92,7 @@ function Shell() {
         </motion.main>
       </AnimatePresence>
 
-      {location.pathname !== '/' && (
+      {['/projects', '/library', '/calendar', '/tools'].some((x) => location.pathname === x || (x === '/library' && location.pathname.startsWith('/library/'))) && (
         <button aria-label="Quick add" onClick={() => setQuickAdd(true)} className="grad-bg fixed bottom-[88px] right-4 z-30 grid h-14 w-14 place-items-center rounded-2xl text-white shadow-xl shadow-violet-900/40 active:scale-95">
           <Plus size={26} />
         </button>

@@ -1,0 +1,66 @@
+import type { MarketingEvent } from '../types';
+
+/**
+ * Indian marketing calendar. Edit dates freely.
+ * verify: true = lunar/regional date that shifts every year — confirm with a panchang
+ * (e.g. drikpanchang.com) or the official holiday list before planning.
+ */
+export const EVENTS: MarketingEvent[] = [
+  // ---- 2026 ----
+  { id: 'childrens-day-2026', name: "Children's Day", date: '2026-11-14', kind: 'national', angle: 'Kids offers, nostalgia posts, school/coaching contests.', industries: ['education', 'restaurant', 'ecommerce'] },
+  { id: 'guru-nanak-2026', name: 'Guru Nanak Jayanti', date: '2026-11-24', verify: true, kind: 'festival', angle: 'Respectful greeting; seva/community message. Avoid hard selling.' },
+  { id: 'black-friday-2026', name: 'Black Friday', date: '2026-11-27', kind: 'sale', angle: 'Biggest online sale weekend — bundles, early access for email/WhatsApp list, SaaS annual-plan deals.', industries: ['ecommerce', 'saas', 'electronics', 'agency', 'it-services'] },
+  { id: 'cyber-monday-2026', name: 'Cyber Monday', date: '2026-11-30', kind: 'sale', angle: 'Last-chance digital deals: courses, software, gadgets.', industries: ['ecommerce', 'saas', 'electronics'] },
+  { id: 'christmas-2026', name: 'Christmas', date: '2026-12-25', kind: 'festival', angle: 'Gifting guides, Secret Santa corporate orders, cafe specials, year-end offers.' },
+  { id: 'nye-2026', name: "New Year's Eve", date: '2026-12-31', kind: 'festival', angle: 'Year-in-review content, party bookings, "new year new you" offers.', industries: ['restaurant', 'hotel', 'gym', 'salon'] },
+  // ---- 2027 ----
+  { id: 'new-year-2027', name: 'New Year', date: '2027-01-01', kind: 'festival', angle: 'Resolutions, planning templates, fresh-start offers, calendars/diaries printing.' },
+  { id: 'youth-day-2027', name: 'National Youth Day', date: '2027-01-12', kind: 'marketing-day', angle: 'Student/youth stories, career content, Vivekananda quotes.', industries: ['education'] },
+  { id: 'lohri-2027', name: 'Lohri', date: '2027-01-13', kind: 'festival', angle: 'North-India audience greeting and bonfire-night offers.' },
+  { id: 'sankranti-2027', name: 'Makar Sankranti / Pongal', date: '2027-01-14', verify: true, kind: 'festival', angle: 'Big festival in Telangana/AP — kite & rangoli content, family offers, harvest theme.' },
+  { id: 'republic-day-2027', name: 'Republic Day', date: '2027-01-26', kind: 'national', angle: 'Tricolour creatives, "Made in India" stories, Republic Day sale.' },
+  { id: 'valentine-week-2027', name: "Valentine's Week (Rose Day)", date: '2027-02-07', kind: 'marketing-day', angle: 'Start of Valentine week — daily themed posts (Rose, Propose, Chocolate… days).', industries: ['restaurant', 'jewellery', 'salon', 'ecommerce', 'hotel'] },
+  { id: 'valentines-2027', name: "Valentine's Day", date: '2027-02-14', kind: 'marketing-day', angle: 'Couple offers, gifting, dinner reservations, custom printed gifts.' },
+  { id: 'shivaratri-2027', name: 'Maha Shivaratri', date: '2027-03-06', verify: true, kind: 'festival', angle: 'Respectful greeting; temple-town travel and fasting-menu angles.' },
+  { id: 'womens-day-2027', name: "International Women's Day", date: '2027-03-08', kind: 'marketing-day', angle: 'Feature women customers/founders/staff; avoid discount-only "pink" posts.' },
+  { id: 'eid-fitr-2027', name: 'Eid al-Fitr', date: '2027-03-10', verify: true, kind: 'festival', angle: 'Eid greetings, Ramadan nights food content, festive fashion & jewellery, family gifting.', industries: ['restaurant', 'jewellery', 'ecommerce', 'salon'] },
+  { id: 'consumer-day-2027', name: 'World Consumer Rights Day', date: '2027-03-15', kind: 'marketing-day', angle: 'Transparency content: pricing, warranty, how we handle complaints.' },
+  { id: 'holi-2027', name: 'Holi', date: '2027-03-22', verify: true, kind: 'festival', angle: 'Colour-themed reels, skin/hair-care tips, party packages, colourful product shoots.' },
+  { id: 'fy-end-2027', name: 'Financial year end', date: '2027-03-31', kind: 'season', angle: 'B2B budget-use-it-or-lose-it offers, annual plans, AMC renewals.', industries: ['saas', 'it-services', 'electronics', 'agency'] },
+  { id: 'world-health-2027', name: 'World Health Day', date: '2027-04-07', kind: 'marketing-day', angle: 'Health check-up camps, myth-busting, wellness tips.', industries: ['clinic', 'gym'] },
+  { id: 'ugadi-2027', name: 'Ugadi / Gudi Padwa', date: '2027-04-07', verify: true, kind: 'festival', angle: 'Telugu New Year — Ugadi pachadi content, new beginnings offers, property/vehicle purchases.' },
+  { id: 'baisakhi-2027', name: 'Baisakhi / Ambedkar Jayanti', date: '2027-04-14', kind: 'festival', angle: 'Harvest festival greeting; Ambedkar Jayanti respectful tribute.' },
+  { id: 'ram-navami-2027', name: 'Ram Navami', date: '2027-04-15', verify: true, kind: 'festival', angle: 'Respectful greeting; Hyderabad shobha yatra traffic advisory posts for local stores.' },
+  { id: 'akshaya-tritiya-2027', name: 'Akshaya Tritiya', date: '2027-05-09', verify: true, kind: 'festival', angle: 'Gold & property buying day — pre-booking offers 2 weeks earlier.', industries: ['jewellery', 'real-estate'] },
+  { id: 'mothers-day-2027', name: "Mother's Day", date: '2027-05-09', kind: 'marketing-day', angle: 'Customer mom stories, gifting, spa/salon packages, family dining.' },
+  { id: 'eid-adha-2027', name: 'Eid al-Adha (Bakrid)', date: '2027-05-17', verify: true, kind: 'festival', angle: 'Eid greetings, festive menus, family gatherings.' },
+  { id: 'telangana-day-2027', name: 'Telangana Formation Day', date: '2027-06-02', kind: 'national', angle: 'Local pride content for Hyderabad brands — Telangana culture, local heroes.' },
+  { id: 'environment-day-2027', name: 'World Environment Day', date: '2027-06-05', kind: 'marketing-day', angle: 'Sustainability practices, eco-friendly products/packaging, e-waste recycling drive.', industries: ['electronics', 'local-retail'] },
+  { id: 'admission-season-2027', name: 'Back to school / admissions', date: '2027-06-07', kind: 'season', angle: 'Laptops for students, coaching batches, uniform/ID printing, school supplies.', industries: ['education', 'electronics', 'local-retail'] },
+  { id: 'fathers-day-2027', name: "Father's Day", date: '2027-06-20', kind: 'marketing-day', angle: 'Dad stories, gadget gifts, grooming packages.' },
+  { id: 'yoga-day-2027', name: 'International Yoga Day', date: '2027-06-21', kind: 'marketing-day', angle: 'Yoga sessions, wellness challenges, healthy menus.', industries: ['gym', 'clinic', 'hotel'] },
+  { id: 'social-media-day-2027', name: 'World Social Media Day', date: '2027-06-30', kind: 'marketing-day', angle: 'Behind-the-scenes of your social, follower thank-you, tips carousel.', industries: ['agency', 'creator'] },
+  { id: 'doctors-day-2027', name: "National Doctors' Day", date: '2027-07-01', kind: 'marketing-day', angle: 'Thank-you posts to doctors, patient stories, free consultation camps.', industries: ['clinic'] },
+  { id: 'bonalu-2027', name: 'Bonalu (Hyderabad)', date: '2027-07-18', verify: true, kind: 'festival', angle: 'Hyderabad-specific festival — local culture content, traffic/timing updates.' },
+  { id: 'friendship-day-2027', name: 'Friendship Day', date: '2027-08-01', kind: 'marketing-day', angle: 'Bring-a-friend offers, group packages, tag-a-friend contests.' },
+  { id: 'independence-day-2027', name: 'Independence Day', date: '2027-08-15', kind: 'national', angle: 'Freedom sale, "Made in India" stories, tricolour creatives (follow flag code).' },
+  { id: 'raksha-bandhan-2027', name: 'Raksha Bandhan', date: '2027-08-17', verify: true, kind: 'festival', angle: 'Sibling gifting, rakhi hampers, custom printed gifts, sweets.', industries: ['ecommerce', 'jewellery', 'local-retail', 'restaurant'] },
+  { id: 'janmashtami-2027', name: 'Janmashtami', date: '2027-08-25', verify: true, kind: 'festival', angle: 'Kids dressed as Krishna photo contests, festive greetings.' },
+  { id: 'ganesh-chaturthi-2027', name: 'Ganesh Chaturthi', date: '2027-09-04', verify: true, kind: 'festival', angle: 'Huge in Hyderabad — pandal banners/flex printing, eco-friendly idols, 10-day content series.' },
+  { id: 'teachers-day-2027', name: "Teachers' Day", date: '2027-09-05', kind: 'marketing-day', angle: 'Thank-you to teachers/mentors; coaching faculty spotlight.', industries: ['education', 'agency'] },
+  { id: 'onam-2027', name: 'Onam', date: '2027-09-12', verify: true, kind: 'festival', angle: 'Onam sadya specials, Kerala audience greetings.' },
+  { id: 'engineers-day-2027', name: "Engineers' Day", date: '2027-09-15', kind: 'marketing-day', angle: 'Tech team spotlight, build stories, engineering student offers.', industries: ['it-services', 'electronics', 'saas'] },
+  { id: 'festive-sale-2027', name: 'Festive sale season (Big Billion / Great Indian)', date: '2027-09-25', verify: true, kind: 'sale', angle: 'Marketplace mega-sales — price-match, bundles, extended warranty, EMI messaging.', industries: ['ecommerce', 'electronics'] },
+  { id: 'navratri-2027', name: 'Navratri / Bathukamma begins', date: '2027-09-30', verify: true, kind: 'festival', angle: '9 colours of Navratri content, Bathukamma (Telangana) celebrations, garba events, ethnic wear.' },
+  { id: 'gandhi-jayanti-2027', name: 'Gandhi Jayanti', date: '2027-10-02', kind: 'national', angle: 'Swachhata/khadi themes, respectful content, no heavy selling.' },
+  { id: 'dussehra-2027', name: 'Dussehra', date: '2027-10-09', verify: true, kind: 'festival', angle: 'Auspicious buying day — vehicles, property, gold, electronics; victory/new-beginnings theme.' },
+  { id: 'karwa-chauth-2027', name: 'Karwa Chauth', date: '2027-10-18', verify: true, kind: 'festival', angle: 'Mehendi, salon & jewellery offers.', industries: ['salon', 'jewellery'] },
+  { id: 'dhanteras-2027', name: 'Dhanteras', date: '2027-10-27', verify: true, kind: 'festival', angle: 'Gold, silver, utensils and electronics buying day.', industries: ['jewellery', 'electronics', 'ecommerce'] },
+  { id: 'diwali-2027', name: 'Diwali', date: '2027-10-29', verify: true, kind: 'festival', angle: 'Biggest season — corporate gifting, festive offers, greetings, home décor, sweets, lighting. Plan 3 weeks ahead.' },
+  { id: 'halloween-2027', name: 'Halloween', date: '2027-10-31', kind: 'marketing-day', angle: 'Themed cafe nights and kids events in metros.', industries: ['restaurant', 'hotel'] },
+  { id: 'childrens-day-2027', name: "Children's Day", date: '2027-11-14', kind: 'national', angle: 'Kids offers, nostalgia posts, school contests.', industries: ['education', 'restaurant', 'ecommerce'] },
+  { id: 'black-friday-2027', name: 'Black Friday', date: '2027-11-26', kind: 'sale', angle: 'Biggest online sale weekend — bundles and early access.', industries: ['ecommerce', 'saas', 'electronics', 'agency', 'it-services'] },
+  { id: 'cyber-monday-2027', name: 'Cyber Monday', date: '2027-11-29', kind: 'sale', angle: 'Last-chance digital deals.', industries: ['ecommerce', 'saas', 'electronics'] },
+  { id: 'christmas-2027', name: 'Christmas', date: '2027-12-25', kind: 'festival', angle: 'Gifting guides, corporate orders, year-end offers.' },
+  { id: 'nye-2027', name: "New Year's Eve", date: '2027-12-31', kind: 'festival', angle: 'Year-in-review, party bookings, resolution offers.' }
+];

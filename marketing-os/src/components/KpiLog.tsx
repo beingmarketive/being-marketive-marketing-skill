@@ -62,11 +62,11 @@ export function KpiLog({ project }: { project: Project }) {
         <LineChart points={series.map((s) => ({ x: s.date, y: s.value }))} color={project.color} />
       </div>
 
-      <div className="mt-3 grid grid-cols-[1fr_140px_auto] gap-2">
+      <div className="mt-3 grid grid-cols-2 gap-2">
         <input className="input" inputMode="decimal" placeholder={`${kpi} value`} value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && add()} />
         <input type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} />
-        <button className="btn-primary" onClick={add}>
-          Log
+        <button className="btn-primary col-span-2" onClick={add}>
+          Log {kpi}
         </button>
       </div>
       <p className="faint mt-2 text-xs">Tip: har Monday last week ke numbers daalo — trend tabhi dikhega.</p>
