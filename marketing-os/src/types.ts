@@ -86,6 +86,21 @@ export interface Task {
   spawned?: string[];
 }
 
+export interface BrandBrief {
+  /** What the business does, in one or two lines */
+  about: string;
+  /** Who the customers are */
+  audience: string;
+  /** Main products / services */
+  offerings: string;
+  /** City / areas served */
+  location: string;
+  /** Why customers choose this brand */
+  usp: string;
+  /** Voice / style notes */
+  tone: string;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -97,8 +112,19 @@ export interface Project {
   kpis: string[];
   aliases: string[];
   website?: string;
+  brief?: BrandBrief;
   createdAt: number;
   archived?: boolean;
+}
+
+export interface BrandIdea {
+  id: string;
+  projectId: string;
+  title: string;
+  channel: Channel;
+  format: string;
+  createdAt: number;
+  usedAt?: number;
 }
 
 export interface HistoryEntry {

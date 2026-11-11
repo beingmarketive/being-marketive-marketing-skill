@@ -66,8 +66,8 @@ async function maybeRemind(): Promise<void> {
     }
   });
 
-  await self.registration.showNotification(`Aaj ke ${counts.today} kaam · ${counts.overdue} pending`, {
-    body: 'Marketing OS kholo — Next Up ready hai.',
+  await self.registration.showNotification(`${counts.today} tasks today · ${counts.overdue} overdue`, {
+    body: 'Open Marketing OS — your Next Up is ready.',
     icon: '/icons/icon-192.png',
     badge: '/icons/icon-192.png',
     tag: 'daily-reminder',

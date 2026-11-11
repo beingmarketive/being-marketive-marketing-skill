@@ -35,7 +35,7 @@ export async function createEventCampaign(e: MarketingEvent, projects: Project[]
   const tasks = projects.map((p) => {
     const ch = mainChannel(p);
     const relevant = !e.industries || e.industries.includes(p.industryId);
-    const subtasks = ['Pick angle + offer (or pure greeting if no fit)', `Design creative for ${ch}`, 'Write caption / copy', 'Schedule post for the event day'];
+    const subtasks = ['Pick angle + offer (or a simple greeting if no fit)', `Design creative for ${ch}`, 'Write caption / copy', 'Schedule post for the event day'];
     if (p.channels.includes('GBP')) subtasks.push('GBP post with offer / holiday hours');
     if (p.channels.includes('WhatsApp')) subtasks.push('WhatsApp broadcast to customers');
     if (p.channels.includes('Meta Ads') && relevant) subtasks.push('Small boosted ad 3 days before');
@@ -46,7 +46,7 @@ export async function createEventCampaign(e: MarketingEvent, projects: Project[]
       due,
       priority: relevant ? 1 : 2,
       estMinutes: relevant ? 60 : 25,
-      notes: `Event: ${e.name} on ${e.date}${e.verify ? ' (date verify karo — lunar calendar)' : ''}\nAngle: ${e.angle}`,
+      notes: `Event: ${e.name} on ${e.date}${e.verify ? ' (verify date — lunar calendar)' : ''}\nAngle: ${e.angle}`,
       subtasks,
       source: 'calendar'
     });

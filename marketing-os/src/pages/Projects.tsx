@@ -33,7 +33,7 @@ export default function Projects() {
       <header className="flex items-center justify-between pt-5">
         <h1 className="text-2xl font-extrabold">Projects</h1>
         <button className="btn-primary !min-h-[42px]" onClick={() => setFormOpen(true)}>
-          <Plus size={18} /> Naya
+          <Plus size={18} /> Add project
         </button>
       </header>
 
@@ -67,8 +67,8 @@ export default function Projects() {
                       ))}
                     </div>
                     <div className="mt-2 flex gap-3 text-xs font-semibold">
-                      <span style={{ color: s.overdue ? 'var(--red)' : 'var(--faint)' }}>🔴 {s.overdue} pending</span>
-                      <span style={{ color: s.today ? 'var(--amber)' : 'var(--faint)' }}>🟡 {s.today} aaj</span>
+                      <span style={{ color: s.overdue ? 'var(--red)' : 'var(--faint)' }}>🔴 {s.overdue} overdue</span>
+                      <span style={{ color: s.today ? 'var(--amber)' : 'var(--faint)' }}>🟡 {s.today} today</span>
                       <span className="faint">{s.open} open</span>
                     </div>
                   </div>
@@ -77,6 +77,11 @@ export default function Projects() {
             </motion.div>
           );
         })}
+        <button onClick={() => setFormOpen(true)} className="flex min-h-[96px] w-full flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed p-4 transition active:scale-[0.99]" style={{ borderColor: 'var(--border)' }}>
+          <Plus size={22} style={{ color: 'var(--accent)' }} />
+          <span className="font-bold">Add a new project</span>
+          <span className="faint text-xs">Any brand or client — pick its industry, fill the brand brief, get brand ideas</span>
+        </button>
       </div>
       <ProjectForm open={formOpen} onClose={() => setFormOpen(false)} />
     </div>

@@ -6,7 +6,7 @@ import { addTask } from '../lib/engine';
 import { useProjects } from '../lib/hooks';
 import { haptic, useUI } from '../lib/ui';
 
-const EXAMPLES = ['Trendy Prints GBP post kal', 'Cloudforz LinkedIn post har somvar', 'BM blog likhna aaj urgent', 'RN World reel parso 5 baje', 'Marketomate carousel har roz'];
+const EXAMPLES = ['Trendy Prints GBP post tomorrow', 'Cloudforz LinkedIn post every monday', 'BM write blog today urgent', 'RN World reel friday 5pm', 'Marketomate carousel daily'];
 
 export function QuickAddBar({ autoFocus = false, onDone }: { autoFocus?: boolean; onDone?: () => void }) {
   const projects = useProjects();
@@ -30,7 +30,7 @@ export function QuickAddBar({ autoFocus = false, onDone }: { autoFocus?: boolean
       estMinutes: parsed.estMinutes,
       startsChain: parsed.startsChain
     });
-    showToast(`Add ho gaya: ${parsed.title}`);
+    showToast(`Added: ${parsed.title}`);
     setText('');
     onDone?.();
   };
@@ -93,7 +93,7 @@ export function QuickAddBar({ autoFocus = false, onDone }: { autoFocus?: boolean
       </AnimatePresence>
       {focused && !text && (
         <div className="faint px-2 pb-1 pt-2 text-xs leading-relaxed">
-          Try: <b>aaj · kal · parso · somvar · 15 nov · 5 baje · har roz · har hafte · har mahine · urgent · 30m</b> + project name
+          Try: <b>today · tomorrow · monday · 15 nov · 5pm · daily · weekly · monthly · every 3 days · urgent · 30m</b> + project name
         </div>
       )}
     </div>

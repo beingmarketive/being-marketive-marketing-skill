@@ -10,7 +10,7 @@ export const AI_MODELS = [
 
 const SYSTEM = `You are the in-app assistant of "Marketing OS", the daily work tool of Shaik Shareef, a digital marketer in Hyderabad, India with 5 years of experience who manages several brands.
 Write ready-to-use marketing output (captions, scripts, outlines, replies, checklists) — not advice about what to write.
-Default to clear Indian English; use light Hinglish only where it sounds natural for the brand's audience.
+Write in clear, simple English for an Indian audience.
 Be specific to the brand and industry given. Use short paragraphs and simple formatting that pastes cleanly into Instagram, Google Business Profile, WhatsApp or WordPress.
 Never invent statistics, prices, reviews or awards; leave clearly marked placeholders like [price] instead.`;
 
@@ -21,7 +21,7 @@ export async function hasApiKey(): Promise<boolean> {
 /** Calls Claude directly from the browser with the user's own key. */
 export async function generate(prompt: string): Promise<string> {
   const apiKey = (await getSetting<string>('apiKey', '')).trim();
-  if (!apiKey) throw new Error('Settings mein Claude API key add karo.');
+  if (!apiKey) throw new Error('Add your Claude API key in Settings.');
   const model = await getSetting<string>('aiModel', DEFAULT_MODEL);
   const { default: Anthropic } = await import('@anthropic-ai/sdk');
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true, maxRetries: 2 });
@@ -36,18 +36,18 @@ export async function generate(prompt: string): Promise<string> {
       ...(supportsFallback ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' as const } : {}),
       messages: [{ role: 'user', content: prompt }]
     });
-    if (response.stop_reason === 'refusal') throw new Error('Claude ne yeh request decline ki. Prompt thoda badal ke try karo.');
+    if (response.stop_reason === 'refusal') throw new Error('Claude declined this request. Rephrase the prompt and try again.');
     const text = response.content
       .filter((b): b is Extract<typeof b, { type: 'text' }> => b.type === 'text')
       .map((b) => b.text)
       .join('\n')
       .trim();
-    if (!text) throw new Error('Khaali response aaya — dobara try karo.');
+    if (!text) throw new Error('Empty response — please try again.');
     return text;
   } catch (err) {
-    if (err instanceof Anthropic.AuthenticationError) throw new Error('API key galat hai. Settings mein check karo.');
-    if (err instanceof Anthropic.RateLimitError) throw new Error('Rate limit — 1 minute baad try karo.');
-    if (err instanceof Anthropic.APIConnectionError) throw new Error('Internet connection nahi hai.');
+    if (err instanceof Anthropic.AuthenticationError) throw new Error('Invalid API key. Check it in Settings.');
+    if (err instanceof Anthropic.RateLimitError) throw new Error('Rate limited — try again in a minute.');
+    if (err instanceof Anthropic.APIConnectionError) throw new Error('No internet connection.');
     if (err instanceof Anthropic.APIError) throw new Error(`Claude API error ${err.status ?? ''}: ${err.message}`);
     throw err;
   }

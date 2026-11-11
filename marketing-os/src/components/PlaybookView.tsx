@@ -15,7 +15,7 @@ export function PlaybookView({ playbook }: { playbook: Playbook }) {
           [
             ['steps', `🪜 Steps (${playbook.steps.length})`],
             ['tips', '💡 Pro tips'],
-            ['mistakes', '⚠️ Galtiyan'],
+            ['mistakes', '⚠️ Mistakes'],
             ['template', '📄 Template']
           ] as const
         ).map(([k, label]) => (
@@ -64,7 +64,7 @@ export function PlaybookView({ playbook }: { playbook: Playbook }) {
               className="btn-ghost mt-2 w-full"
               onClick={async () => {
                 await copyText(playbook.template);
-                showToast('Template copy ho gaya 📋');
+                showToast('Template copied 📋');
               }}
             >
               <Copy size={16} /> Copy template

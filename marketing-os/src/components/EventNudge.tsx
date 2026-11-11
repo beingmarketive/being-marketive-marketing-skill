@@ -26,8 +26,8 @@ export function EventNudge() {
           <Link to="/tools/review" className="card mt-4 flex items-center gap-3 p-4">
             <ClipboardCheck className="shrink-0 text-emerald-400" />
             <div className="flex-1">
-              <div className="font-bold">Sunday hai — Weekly review karo</div>
-              <div className="faint text-xs">Projects ka health, missed tasks, next week ka plan · 10 min</div>
+              <div className="font-bold">It's Sunday — do your weekly review</div>
+              <div className="faint text-xs">Project health, missed tasks, next week's plan · 10 min</div>
             </div>
           </Link>
         </motion.div>
@@ -44,7 +44,7 @@ export function EventNudge() {
                 <CalendarHeart className="mt-0.5 shrink-0 text-pink-400" />
                 <div>
                   <div className="font-bold">
-                    {e.name} {d === 0 ? 'aaj hai!' : `${d} din mein`} <span className="faint text-xs font-medium">· {shortDate(e.date)}</span>
+                    {e.name} {d === 0 ? 'is today!' : `in ${d} day${d > 1 ? 's' : ''}`} <span className="faint text-xs font-medium">· {shortDate(e.date)}</span>
                     {e.verify && <span className="ml-1 rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">VERIFY DATE</span>}
                   </div>
                   <div className="muted mt-1 text-sm">{e.angle}</div>
@@ -55,10 +55,10 @@ export function EventNudge() {
                 onClick={async () => {
                   haptic(12);
                   const n = await createEventCampaign(e, projects);
-                  showToast(`${n} campaign tasks ban gaye 🎉`);
+                  showToast(`${n} campaign tasks created 🎉`);
                 }}
               >
-                Sab projects ke liye campaign tasks banao?
+                Create campaign tasks for all projects?
               </button>
             </div>
           </motion.div>

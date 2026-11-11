@@ -62,6 +62,9 @@ export default function Tools() {
           </Link>
         ))}
       </div>
+      <Link to="/projects" className="card mt-3 flex items-center gap-3 p-4 font-semibold">
+        <Plus size={20} /> Add / manage projects
+      </Link>
       <Link to="/settings" className="card mt-3 flex items-center gap-3 p-4 font-semibold">
         <Settings size={20} /> Settings · Reminder · Backup · AI key
       </Link>
@@ -157,14 +160,14 @@ function UtmBuilder() {
             className="btn-primary mt-3 w-full"
             onClick={async () => {
               await copyText(result);
-              showToast('UTM link copy ho gaya 🔗');
+              showToast('UTM link copied 🔗');
             }}
           >
             <Copy size={16} /> Copy link
           </button>
         </div>
       )}
-      <p className="faint text-xs">Rule: sab lowercase, spaces ki jagah underscore. Same naming har jagah — tabhi GA4 mein clean data milega.</p>
+      <p className="faint text-xs">Rule: all lowercase, underscores instead of spaces, same naming everywhere — that keeps GA4 data clean.</p>
     </div>
   );
 }
@@ -204,7 +207,7 @@ function Repurposer() {
         source: 'repurpose'
       });
     }
-    showToast(`${picked.length} repurpose tasks ban gaye ♻️ (agle 7 din mein spread)`);
+    showToast(`${picked.length} repurpose tasks created ♻️ (spread over the next 7 days)`);
     setSource('');
     setLink('');
   };
@@ -222,9 +225,9 @@ function Repurposer() {
         ))}
       </div>
       <button className="btn-primary w-full" disabled={!source.trim() || !picked.length} onClick={create}>
-        <Recycle size={18} /> {picked.length} tasks banao
+        <Recycle size={18} /> Create {picked.length} tasks
       </button>
-      <AiBox prompt={`Repurpose this piece "${source || '[title]'}" ${link ? `(${link}) ` : ''}into: ${picked.join(', ')}. Give a platform-specific hook and full draft for each. Audience: small business owners in India.`} title="AI: sab drafts ek saath" />
+      <AiBox prompt={`Repurpose this piece "${source || '[title]'}" ${link ? `(${link}) ` : ''}into: ${picked.join(', ')}. Give a platform-specific hook and full draft for each. Audience: small business owners in India.`} title="AI: all drafts at once" />
     </div>
   );
 }
@@ -252,7 +255,7 @@ function Hashtags() {
             await db.hashtags.add({ id: uid('hs_'), name: name.trim(), tags: tags.trim(), projectId, createdAt: Date.now() });
             setName('');
             setTags('');
-            showToast('Hashtag set save ho gaya #️⃣');
+            showToast('Hashtag set saved #️⃣');
           }}
         >
           <Plus size={18} /> Save set
@@ -270,7 +273,7 @@ function Hashtags() {
                   style={{ background: 'var(--input)' }}
                   onClick={async () => {
                     await copyText(s.tags);
-                    showToast('Hashtags copy ho gaye');
+                    showToast('Hashtags copied');
                   }}
                 >
                   <Copy size={15} />
@@ -320,7 +323,7 @@ function Prompts() {
         ))}
       </div>
       <div className="card mt-5 space-y-2 p-4">
-        <div className="section-title">Apna prompt save karo</div>
+        <div className="section-title">Save your own prompt</div>
         <input className="input" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
         <textarea className="input min-h-[100px]" placeholder="Prompt text…" value={body} onChange={(e) => setBody(e.target.value)} />
         <button
@@ -330,7 +333,7 @@ function Prompts() {
             await db.prompts.add({ id: uid('pr_'), title: title.trim(), body: body.trim(), createdAt: Date.now() });
             setTitle('');
             setBody('');
-            showToast('Prompt save ho gaya');
+            showToast('Prompt saved');
           }}
         >
           <Plus size={18} /> Save
@@ -377,7 +380,7 @@ function SwipeFile() {
             setLink('');
             setNote('');
             setTags('');
-            showToast('Swipe file mein save 🔖');
+            showToast('Saved to swipe file 🔖');
           }}
         >
           <Bookmark size={18} /> Save
@@ -415,7 +418,7 @@ function SwipeFile() {
             {i.note && <p className="muted mt-1.5 whitespace-pre-wrap text-sm">{i.note}</p>}
           </div>
         ))}
-        {!list.length && <p className="faint py-6 text-center text-sm">Abhi kuch save nahi kiya. Jo bhi accha ad/hook dikhe — yahan daal do.</p>}
+        {!list.length && <p className="faint py-6 text-center text-sm">Nothing saved yet. Whenever you see a great ad or hook, save it here.</p>}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export function RecurrencePicker({ value, onChange, due }: { value?: Recurrence;
     if (k === 'monthly') onChange({ type: 'monthly', dayOfMonth: fromISO(due).getDate() });
     if (k === 'custom') onChange({ type: 'custom', everyDays: 2 });
   };
-  const labels: Record<Kind, string> = { none: 'Ek baar', daily: 'Har roz', weekly: 'Har hafte', monthly: 'Har mahine', custom: 'Custom' };
+  const labels: Record<Kind, string> = { none: 'Once', daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly', custom: 'Custom' };
   return (
     <div>
       <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1">
@@ -45,16 +45,15 @@ export function RecurrencePicker({ value, onChange, due }: { value?: Recurrence;
       )}
       {value?.type === 'monthly' && (
         <label className="mt-3 flex items-center gap-3 text-sm muted">
-          Har mahine ki
+          Every month on day
           <input type="number" min={1} max={31} value={value.dayOfMonth} onChange={(e) => onChange({ type: 'monthly', dayOfMonth: Math.min(31, Math.max(1, Number(e.target.value) || 1)) })} className="input !w-20 text-center" />
-          tareekh
         </label>
       )}
       {value?.type === 'custom' && (
         <label className="mt-3 flex items-center gap-3 text-sm muted">
-          Har
+          Every
           <input type="number" min={1} max={90} value={value.everyDays} onChange={(e) => onChange({ type: 'custom', everyDays: Math.min(90, Math.max(1, Number(e.target.value) || 1)) })} className="input !w-20 text-center" />
-          din mein
+          days
         </label>
       )}
     </div>

@@ -8,6 +8,7 @@ import { db } from '../db/db';
 import { PLAYBOOKS, fillPrompt, findPlaybook } from '../data/playbooks';
 import { getIndustry } from '../data/industries';
 import { updateTask } from '../lib/engine';
+import { promptVars } from '../lib/brand';
 import type { Playbook } from '../types';
 
 export function StuckSheet() {
@@ -20,13 +21,7 @@ export function StuckSheet() {
 
   const playbook = override ?? (task ? findPlaybook(task) : undefined) ?? PLAYBOOKS[0];
   const prompt = task
-    ? fillPrompt(playbook.aiPrompt, {
-        project: project?.name ?? 'my brand',
-        industry: getIndustry(project?.industryId)?.name ?? 'digital marketing',
-        task: task.title,
-        website: project?.website ?? '[website]',
-        notes: [project?.notes, task.notes].filter(Boolean).join(' | ') || 'none'
-      })
+    ? fillPrompt(playbook.aiPrompt, promptVars(project, task.title, task.notes))
     : '';
 
   return (
@@ -36,7 +31,7 @@ export function StuckSheet() {
       full
       title={
         <span>
-          🛟 Main stuck hoon <span className="faint text-sm font-medium">· {playbook.emoji} {playbook.name}</span>
+          🛟 I'm stuck <span className="faint text-sm font-medium">· {playbook.emoji} {playbook.name}</span>
         </span>
       }
     >
@@ -56,7 +51,7 @@ export function StuckSheet() {
             />
           </div>
           <label className="mt-5 block">
-            <span className="label">Galat playbook? Doosra chuno</span>
+            <span className="label">Wrong playbook? Pick another</span>
             <select className="input" value={playbook.id} onChange={(e) => setOverride(PLAYBOOKS.find((p) => p.id === e.target.value) ?? null)}>
               {PLAYBOOKS.map((p) => (
                 <option key={p.id} value={p.id}>

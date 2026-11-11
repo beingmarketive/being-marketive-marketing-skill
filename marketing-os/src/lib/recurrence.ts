@@ -58,17 +58,17 @@ export function latestBefore(rec: Recurrence, before: string, floor: string, anc
 }
 
 export function describeRecurrence(rec?: Recurrence): string {
-  if (!rec) return 'Ek baar';
+  if (!rec) return 'Once';
   switch (rec.type) {
     case 'daily':
-      return 'Har roz';
+      return 'Daily';
     case 'weekly':
-      if (rec.days.length === 7) return 'Har roz';
+      if (rec.days.length === 7) return 'Daily';
       if (rec.days.length === 5 && [1, 2, 3, 4, 5].every((d) => rec.days.includes(d))) return 'Mon–Fri';
-      return 'Har hafte · ' + [...rec.days].sort().map((d) => WEEKDAY_SHORT[d]).join(', ');
+      return 'Weekly · ' + [...rec.days].sort().map((d) => WEEKDAY_SHORT[d]).join(', ');
     case 'monthly':
-      return `Har mahine · ${rec.dayOfMonth} tareekh`;
+      return `Monthly · day ${rec.dayOfMonth}`;
     case 'custom':
-      return `Har ${rec.everyDays} din`;
+      return `Every ${rec.everyDays} days`;
   }
 }

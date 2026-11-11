@@ -35,7 +35,7 @@ export function ProgressRing({ done, total, size = 76 }: { done: number; total: 
           {done}
           <span className="faint text-xs font-semibold">/{total}</span>
         </div>
-        <div className="faint text-[10px] font-semibold uppercase tracking-wide">Aaj</div>
+        <div className="faint text-[10px] font-semibold uppercase tracking-wide">Today</div>
       </div>
     </div>
   );

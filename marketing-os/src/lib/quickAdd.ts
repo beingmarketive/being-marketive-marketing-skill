@@ -196,7 +196,7 @@ export function parseQuickAdd(input: string, projects: Pick<Project, 'id' | 'nam
   if (channel) hints.push(`${CHANNEL_META[channel].emoji} ${channel}`);
   hints.push(`📅 ${dueLabel(due, T)}${dueTime ? ' ' + dueTime : ''}`);
   if (recurrence) hints.push(`🔁 ${recLabel(recurrence)}`);
-  if (priority === 1) hints.push('🔥 Zaroori');
+  if (priority === 1) hints.push('🔥 High priority');
   if (estMinutes) hints.push(`⏱ ${estMinutes}m`);
   if (startsChain) hints.push('⛓ Chain');
 
@@ -212,9 +212,9 @@ function resolveDayMonth(day: number, month0: number, T: string): string | null 
 }
 
 function dueLabel(due: string, T: string): string {
-  if (due === T) return 'Aaj';
-  if (due === addDays(T, 1)) return 'Kal';
-  if (due === addDays(T, 2)) return 'Parso';
+  if (due === T) return 'Today';
+  if (due === addDays(T, 1)) return 'Tomorrow';
+  if (due === addDays(T, 2)) return 'In 2 days';
   const d = fromISO(due);
   return `${WD_LABEL[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}`;
 }
@@ -222,12 +222,12 @@ function dueLabel(due: string, T: string): string {
 function recLabel(r: Recurrence): string {
   switch (r.type) {
     case 'daily':
-      return 'Har roz';
+      return 'Daily';
     case 'weekly':
-      return 'Har ' + r.days.map((d) => WD_LABEL[d]).join(', ');
+      return 'Every ' + r.days.map((d) => WD_LABEL[d]).join(', ');
     case 'monthly':
-      return `Har mahine ${r.dayOfMonth} ko`;
+      return `Monthly on day ${r.dayOfMonth}`;
     case 'custom':
-      return `Har ${r.everyDays} din`;
+      return `Every ${r.everyDays} days`;
   }
 }

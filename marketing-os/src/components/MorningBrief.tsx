@@ -53,12 +53,12 @@ export function MorningBrief() {
             </motion.div>
 
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="mt-8 text-2xl font-bold leading-snug">
-              Aaj ke <span className="text-amber-400">{data.today} kaam</span>, <span className="text-rose-400">{data.overdue} pending</span>, streak <span className="inline-flex items-center text-orange-400"><Flame size={22} />{data.streak}</span>
-              <div className="faint mt-2 text-sm font-medium">≈ {Math.floor(data.mins / 60)}h {data.mins % 60}m ka kaam · ek ek karke, sab ho jayega.</div>
+              <span className="text-amber-400">{data.today} tasks today</span>, <span className="text-rose-400">{data.overdue} overdue</span>, streak <span className="inline-flex items-center text-orange-400"><Flame size={22} />{data.streak}</span>
+              <div className="faint mt-2 text-sm font-medium">≈ {Math.floor(data.mins / 60)}h {data.mins % 60}m of work · one task at a time.</div>
             </motion.div>
 
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="mt-8">
-              <div className="section-title faint mb-3">🎯 Aaj ke top 3</div>
+              <div className="section-title faint mb-3">🎯 Today's top 3</div>
               <div className="space-y-2.5">
                 {data.top.map((t, i) => {
                   const p = t.projectId ? data.projects[t.projectId] : undefined;
@@ -75,19 +75,19 @@ export function MorningBrief() {
                     </div>
                   );
                 })}
-                {!data.top.length && <div className="card p-4 text-center">Aaj sab clear hai 🎉 Library se ek Pro Move try karo.</div>}
+                {!data.top.length && <div className="card p-4 text-center">All clear today 🎉 Try a Pro Move from the Library.</div>}
               </div>
             </motion.div>
 
             {data.events.length > 0 && (
               <div className="card mt-4 p-4 text-sm">
-                📅 Aane wale: {data.events.map((e) => e.name).join(', ')} — Today screen par campaign tasks bana sakte ho.
+                📅 Coming up: {data.events.map((e) => e.name).join(', ')} — create campaign tasks from the Today screen.
               </div>
             )}
 
             <div className="flex-1" />
             <button className="btn-primary mt-10 !min-h-[56px] w-full text-lg" onClick={close}>
-              Chalo shuru karein 🚀
+              Let's start 🚀
             </button>
           </div>
         </motion.div>

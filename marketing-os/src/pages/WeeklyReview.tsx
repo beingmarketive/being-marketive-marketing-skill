@@ -41,10 +41,10 @@ export default function WeeklyReview() {
 
       <section className="card mt-4 p-4">
         <div className="text-3xl font-extrabold">
-          {totalDone} <span className="faint text-base font-semibold">kaam is hafte ho gaye</span>
+          {totalDone} <span className="faint text-base font-semibold">tasks done this week</span>
         </div>
         <div className="muted mt-1 text-sm">
-          {data.misses.length} recurring late/missed · {data.overdue.length} abhi pending
+          {data.misses.length} recurring late/missed · {data.overdue.length} overdue now
         </div>
       </section>
 
@@ -76,7 +76,7 @@ export default function WeeklyReview() {
           );
         })}
       </div>
-      <p className="faint mt-2 text-xs">Health = last 14 din mein recurring tasks ka on-time %.</p>
+      <p className="faint mt-2 text-xs">Health = on-time % of recurring tasks in the last 14 days.</p>
 
       {data.misses.length > 0 && (
         <>
@@ -91,11 +91,11 @@ export default function WeeklyReview() {
               </div>
             ))}
           </div>
-          <p className="faint mt-2 text-xs">Baar baar miss ho raha hai? Frequency kam karo ya time block fix karo — consistency {'>'} volume.</p>
+          <p className="faint mt-2 text-xs">Missing the same task repeatedly? Lower its frequency or block a fixed time — consistency {'>'} volume.</p>
         </>
       )}
 
-      <h2 className="section-title mb-3 mt-6">🗓 Next week ka plan ({data.next.length})</h2>
+      <h2 className="section-title mb-3 mt-6">🗓 Next week's plan ({data.next.length})</h2>
       <div className="space-y-2">
         {rows.map((r) => {
           const list = data.next.filter((t) => (t.projectId ?? '_personal') === r.id);
@@ -123,7 +123,7 @@ export default function WeeklyReview() {
         className="btn-primary mt-6 w-full"
         onClick={async () => {
           await setSetting('lastReview', T);
-          showToast('Weekly review done ✅ Agla hafta strong!');
+          showToast('Weekly review done ✅ Have a strong week!');
           nav('/');
         }}
       >

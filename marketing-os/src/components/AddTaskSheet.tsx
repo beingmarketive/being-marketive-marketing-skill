@@ -7,7 +7,7 @@ import { useUI, haptic } from '../lib/ui';
 import { CHANNEL_META } from '../data/channels';
 
 /** "Add as task" flow: pick project + when, then create. */
-export function AddTaskSheet({ template, onClose, defaultProjectId = null, extraNote }: { template: NewTask | null; onClose: () => void; defaultProjectId?: string | null; extraNote?: string }) {
+export function AddTaskSheet({ template, onClose, defaultProjectId = null, extraNote, onCreated }: { template: NewTask | null; onClose: () => void; defaultProjectId?: string | null; extraNote?: string; onCreated?: () => void }) {
   const { showToast } = useUI();
   const [projectId, setProjectId] = useState<string | null>(defaultProjectId);
   const [when, setWhen] = useState<'today' | 'tomorrow' | 'week' | 'custom'>('tomorrow');
@@ -28,7 +28,7 @@ export function AddTaskSheet({ template, onClose, defaultProjectId = null, extra
     <Sheet
       open={!!template}
       onClose={onClose}
-      title="Task banao"
+      title="Create task"
       footer={
         <button
           className="btn-primary mb-1 w-full"
@@ -36,11 +36,12 @@ export function AddTaskSheet({ template, onClose, defaultProjectId = null, extra
             if (!template) return;
             haptic(10);
             await addTask({ ...template, title: title.trim() || template.title, projectId, due });
-            showToast('Task ban gaya ✅');
+            showToast('Task created ✅');
+            onCreated?.();
             onClose();
           }}
         >
-          Add karo
+          Add task
         </button>
       }
     >
@@ -62,14 +63,14 @@ export function AddTaskSheet({ template, onClose, defaultProjectId = null, extra
             <ProjectPicker value={projectId} onChange={setProjectId} />
           </label>
           <div>
-            <span className="label">Kab?</span>
+            <span className="label">When?</span>
             <div className="flex flex-wrap gap-2">
               {(
                 [
-                  ['today', 'Aaj'],
-                  ['tomorrow', 'Kal'],
-                  ['week', 'Is hafte'],
-                  ['custom', 'Date chuno']
+                  ['today', 'Today'],
+                  ['tomorrow', 'Tomorrow'],
+                  ['week', 'This week'],
+                  ['custom', 'Pick date']
                 ] as const
               ).map(([k, l]) => (
                 <button key={k} className={`chip ${when === k ? 'chip-on' : ''}`} onClick={() => setWhen(k)}>

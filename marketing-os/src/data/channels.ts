@@ -24,7 +24,7 @@ export const CHANNEL_META: Record<Channel, ChannelMeta> = {
 };
 
 export const PRIORITY_META = {
-  1: { label: 'High', hinglish: 'Zaroori', color: '#f43f5e' },
-  2: { label: 'Medium', hinglish: 'Normal', color: '#f59e0b' },
-  3: { label: 'Low', hinglish: 'Baad mein', color: '#64748b' }
+  1: { label: 'High', hinglish: 'High', color: '#f43f5e' },
+  2: { label: 'Medium', hinglish: 'Medium', color: '#f59e0b' },
+  3: { label: 'Low', hinglish: 'Low', color: '#64748b' }
 } as const;

@@ -1,6 +1,6 @@
 import { db } from './db';
 
-const TABLES = ['projects', 'tasks', 'history', 'kpis', 'days', 'settings', 'swipes', 'hashtags', 'prompts'] as const;
+const TABLES = ['projects', 'tasks', 'history', 'kpis', 'days', 'settings', 'swipes', 'hashtags', 'prompts', 'ideas'] as const;
 
 export async function exportBackup(): Promise<Blob> {
   const data: Record<string, unknown[]> = {};
@@ -27,7 +27,7 @@ export async function downloadBackup(): Promise<void> {
 export async function importBackup(file: File): Promise<{ tasks: number; projects: number }> {
   const text = await file.text();
   const payload = JSON.parse(text);
-  if (payload?.app !== 'marketing-os' || !payload.data) throw new Error('Yeh Marketing OS backup file nahi lag rahi.');
+  if (payload?.app !== 'marketing-os' || !payload.data) throw new Error('This does not look like a Marketing OS backup file.');
   const apiKey = await db.settings.get('apiKey');
   await db.transaction('rw', TABLES.map((t) => db.table(t)), async () => {
     for (const name of TABLES) {

@@ -126,7 +126,7 @@ export function FocusMode() {
               )}
               <button
                 className="btn-ghost"
-                aria-label="Main stuck hoon"
+                aria-label="I'm stuck"
                 onClick={() => {
                   openFocus(null);
                   openStuck(task.id);
@@ -163,7 +163,7 @@ export function FocusMode() {
                 await actions.complete(task.id);
               }}
             >
-              <Check size={20} /> Ho gaya
+              <Check size={20} /> Done
             </button>
           </div>
         </motion.div>

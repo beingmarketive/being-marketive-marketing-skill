@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sheet } from './Sheet';
 import { INDUSTRIES, getIndustry } from '../data/industries';
-import { CHANNELS, type Channel, type Project } from '../types';
+import { CHANNELS, type BrandBrief, type Channel, type Project } from '../types';
 import { CHANNEL_META } from '../data/channels';
 import { db } from '../db/db';
 import { applyIndustryPack } from '../lib/engine';
@@ -9,10 +10,22 @@ import { uid } from '../lib/id';
 import { useUI } from '../lib/ui';
 import { describeRecurrence } from '../lib/recurrence';
 
+const EMPTY_BRIEF: BrandBrief = { about: '', audience: '', offerings: '', location: '', usp: '', tone: '' };
+
+const BRIEF_FIELDS: { key: keyof BrandBrief; label: string; placeholder: string }[] = [
+  { key: 'about', label: 'What the business does', placeholder: 'e.g. Family dental clinic offering implants, braces and root canal' },
+  { key: 'audience', label: 'Customers / audience', placeholder: 'e.g. Families and working professionals within 5 km' },
+  { key: 'offerings', label: 'Main products / services', placeholder: 'e.g. Implants, aligners, kids dentistry, teeth whitening' },
+  { key: 'location', label: 'City / areas served', placeholder: 'e.g. Kukatpally, Hyderabad' },
+  { key: 'usp', label: 'Why customers choose this brand', placeholder: 'e.g. 15 years experience, same-day appointments, EMI available' },
+  { key: 'tone', label: 'Brand voice', placeholder: 'e.g. Warm, reassuring, simple English' }
+];
+
 const COLORS = ['#7c5cff', '#ec4899', '#22d3ee', '#f59e0b', '#ef4444', '#22c55e', '#3b82f6', '#a855f7', '#14b8a6', '#f97316'];
 
 export function ProjectForm({ open, onClose, project }: { open: boolean; onClose: () => void; project?: Project }) {
   const { showToast } = useUI();
+  const nav = useNavigate();
   const [name, setName] = useState('');
   const [industryId, setIndustryId] = useState('agency');
   const [color, setColor] = useState(COLORS[0]);
@@ -22,6 +35,7 @@ export function ProjectForm({ open, onClose, project }: { open: boolean; onClose
   const [notes, setNotes] = useState('');
   const [website, setWebsite] = useState('');
   const [applyPack, setApplyPack] = useState(true);
+  const [brief, setBrief] = useState<BrandBrief>(EMPTY_BRIEF);
 
   useEffect(() => {
     if (!open) return;
@@ -34,6 +48,7 @@ export function ProjectForm({ open, onClose, project }: { open: boolean; onClose
       setAliases(project.aliases.join(', '));
       setNotes(project.notes);
       setWebsite(project.website ?? '');
+      setBrief({ ...EMPTY_BRIEF, ...project.brief });
       setApplyPack(false);
     } else {
       setName('');
@@ -44,6 +59,7 @@ export function ProjectForm({ open, onClose, project }: { open: boolean; onClose
       setAliases('');
       setNotes('');
       setWebsite('');
+      setBrief(EMPTY_BRIEF);
       setApplyPack(true);
     }
   }, [open, project]);
@@ -75,14 +91,16 @@ export function ProjectForm({ open, onClose, project }: { open: boolean; onClose
         .map((a) => a.trim().toLowerCase())
         .filter(Boolean),
       website: website.trim() || undefined,
+      brief,
       createdAt: project?.createdAt ?? Date.now(),
       archived: project?.archived
     };
     await db.projects.put(data);
     let n = 0;
     if (applyPack) n = await applyIndustryPack(data, channels.length ? [...channels, 'Reporting'] : undefined);
-    showToast(project ? 'Project update ho gaya' : `Project ban gaya${n ? ` · ${n} recurring tasks set 🔁` : ''}`);
+    showToast(project ? 'Project updated' : `Project created${n ? ` · ${n} recurring tasks scheduled 🔁` : ''}`);
     onClose();
+    if (!project) nav(`/projects/${data.id}?tab=ideas`);
   };
 
   const packTasks = pack.recurring.filter((r) => !channels.length || channels.includes(r.channel) || r.channel === 'Reporting');
@@ -91,11 +109,11 @@ export function ProjectForm({ open, onClose, project }: { open: boolean; onClose
     <Sheet
       open={open}
       onClose={onClose}
-      title={project ? 'Project edit' : 'Naya project'}
+      title={project ? 'Project edit' : 'Add project'}
       full
       footer={
         <button className="btn-primary mb-1 w-full" disabled={!name.trim()} onClick={save}>
-          {project ? 'Save' : 'Project banao'}
+          {project ? 'Save' : 'Create project'}
         </button>
       }
     >
@@ -150,6 +168,19 @@ export function ProjectForm({ open, onClose, project }: { open: boolean; onClose
         <span className="label">Website</span>
         <input className="input" value={website} placeholder="https://" onChange={(e) => setWebsite(e.target.value)} />
       </label>
+      <div className="card mb-4 p-4">
+        <div className="section-title mb-1">🧭 Brand brief</div>
+        <p className="faint mb-3 text-xs">Used for brand-specific ideas and every AI prompt. The more specific, the better.</p>
+        <div className="space-y-3">
+          {BRIEF_FIELDS.map((f) => (
+            <label key={f.key} className="block">
+              <span className="label">{f.label}</span>
+              <textarea className="input min-h-[52px] text-sm" rows={2} placeholder={f.placeholder} value={brief[f.key]} onChange={(e) => setBrief({ ...brief, [f.key]: e.target.value })} />
+            </label>
+          ))}
+        </div>
+      </div>
+
       <label className="mb-4 block">
         <span className="label">Notes</span>
         <textarea className="input min-h-[80px]" value={notes} placeholder="Goals, audience, brand voice, logins location…" onChange={(e) => setNotes(e.target.value)} />
@@ -157,7 +188,7 @@ export function ProjectForm({ open, onClose, project }: { open: boolean; onClose
 
       <div className="card p-4">
         <label className="flex items-center justify-between gap-3">
-          <span className="font-semibold">{pack.emoji} Industry pack ke recurring tasks banao</span>
+          <span className="font-semibold">{pack.emoji} Create recurring tasks from the industry pack</span>
           <input type="checkbox" className="h-6 w-6 accent-violet-500" checked={applyPack} onChange={(e) => setApplyPack(e.target.checked)} />
         </label>
         {applyPack && (

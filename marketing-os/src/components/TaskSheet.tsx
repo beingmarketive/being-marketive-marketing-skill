@@ -91,7 +91,7 @@ export function TaskSheet() {
   const save = async () => {
     if (!f.title.trim()) return;
     await addTask({ ...f, dueTime: f.dueTime || undefined, source: draft?.source ?? 'manual', playbookId: draft?.playbookId, chain: draft?.chain });
-    showToast('Task add ho gaya ✨');
+    showToast('Task added ✨');
     closeTask();
   };
 
@@ -104,7 +104,7 @@ export function TaskSheet() {
 
   const footer = isNew ? (
     <button className="btn-primary mb-1 w-full" onClick={save} disabled={!f.title.trim()}>
-      <Plus size={18} /> Task add karo
+      <Plus size={18} /> Add task
     </button>
   ) : task?.status === 'todo' ? (
     <div className="mb-1 grid grid-cols-[1fr_auto_auto] gap-2">
@@ -115,7 +115,7 @@ export function TaskSheet() {
           await actions.complete(task.id);
         }}
       >
-        <Check size={18} /> Ho gaya
+        <Check size={18} /> Done
       </button>
       <button
         className="btn-ghost"
@@ -125,30 +125,30 @@ export function TaskSheet() {
           await actions.snooze(task.id);
         }}
       >
-        <AlarmClockOff size={18} /> Kal
+        <AlarmClockOff size={18} /> Tomorrow
       </button>
       <button
         className="btn-ghost"
         aria-label="Delete"
         onClick={async () => {
-          if (!confirm(task.recurrence ? 'Yeh recurring task hai. Delete karne se series ruk jayegi. Pakka?' : 'Task delete karein?')) return;
+          if (!confirm(task.recurrence ? 'This is a recurring task. Deleting it stops the whole series. Delete?' : 'Delete this task?')) return;
           closeTask();
           await deleteTask(task.id);
-          showToast('Task delete ho gaya');
+          showToast('Task deleted');
         }}
       >
         <Trash2 size={18} />
       </button>
     </div>
   ) : (
-    <div className="faint mb-1 py-2 text-center text-sm">✅ Yeh task ho chuka hai</div>
+    <div className="faint mb-1 py-2 text-center text-sm">✅ This task is done</div>
   );
 
   return (
-    <Sheet open={open} onClose={closeTask} title={isNew ? 'Naya task' : 'Task'} full footer={footer}>
+    <Sheet open={open} onClose={closeTask} title={isNew ? 'New task' : 'Task'} full footer={footer}>
       <textarea
         className="input mb-4 min-h-[60px] resize-none !text-lg font-semibold"
-        placeholder="Kya karna hai?"
+        placeholder="What needs to be done?"
         value={f.title}
         rows={2}
         autoFocus={isNew}
@@ -165,7 +165,7 @@ export function TaskSheet() {
               openStuck(task.id);
             }}
           >
-            <LifeBuoy size={18} className="text-amber-400" /> Main stuck hoon
+            <LifeBuoy size={18} className="text-amber-400" /> I'm stuck
           </button>
           <button
             className="btn-ghost !min-h-[50px] !justify-start"
@@ -222,7 +222,7 @@ export function TaskSheet() {
           <div className="grid grid-cols-3 gap-1.5">
             {([1, 2, 3] as Priority[]).map((p) => (
               <button key={p} className="h-[46px] rounded-xl text-sm font-semibold transition" onClick={() => persist({ priority: p })} style={{ background: f.priority === p ? PRIORITY_META[p].color : 'var(--input)', color: f.priority === p ? '#fff' : 'var(--muted)' }}>
-                {PRIORITY_META[p].hinglish}
+                {PRIORITY_META[p].label}
               </button>
             ))}
           </div>
@@ -239,14 +239,14 @@ export function TaskSheet() {
       </div>
 
       <div className="mb-4">
-        <span className="label">Done hone ke baad (chain)</span>
+        <span className="label">After done (chain)</span>
         {task?.chain ? (
           <div className="rounded-xl p-3 text-sm muted" style={{ background: 'var(--input)' }}>
             ⛓ {CHAIN_BY_ID[task.chain.chainId]?.name} · step {task.chain.step + 1}/{CHAIN_BY_ID[task.chain.chainId]?.steps.length}
           </div>
         ) : (
           <select className="input" value={f.startsChain ?? ''} onChange={(e) => persist({ startsChain: e.target.value || undefined })}>
-            <option value="">Kuch nahi</option>
+            <option value="">Nothing</option>
             {CHAINS.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -255,7 +255,7 @@ export function TaskSheet() {
           </select>
         )}
         {f.startsChain && !task?.chain && (
-          <input className="input mt-2" placeholder="Topic / title (e.g. blog ka naam) — next steps mein use hoga" value={f.topic} onChange={(e) => set('topic', e.target.value)} onBlur={() => persist({ topic: f.topic })} />
+          <input className="input mt-2" placeholder="Topic / title (e.g. blog title) — used to name the next steps" value={f.topic} onChange={(e) => set('topic', e.target.value)} onBlur={() => persist({ topic: f.topic })} />
         )}
       </div>
 
@@ -278,7 +278,7 @@ export function TaskSheet() {
             </div>
           ))}
           <div className="flex gap-2">
-            <input className="input" placeholder="Step add karo…" value={newSub} onChange={(e) => setNewSub(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addSub()} />
+            <input className="input" placeholder="Add a step…" value={newSub} onChange={(e) => setNewSub(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addSub()} />
             <button className="btn-ghost" onClick={addSub} aria-label="Add step">
               <Plus size={18} />
             </button>

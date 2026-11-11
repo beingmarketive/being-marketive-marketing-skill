@@ -26,7 +26,7 @@ export function KpiLog({ project }: { project: Project }) {
     if (!value.trim() || Number.isNaN(v)) return;
     await db.kpis.add({ id: uid('k_'), projectId: project.id, kpi, value: v, date });
     setValue('');
-    showToast(`${kpi}: ${v} log ho gaya 📈`);
+    showToast(`${kpi}: ${v} logged 📈`);
   };
 
   const addKpi = async () => {
@@ -69,7 +69,7 @@ export function KpiLog({ project }: { project: Project }) {
           Log {kpi}
         </button>
       </div>
-      <p className="faint mt-2 text-xs">Tip: har Monday last week ke numbers daalo — trend tabhi dikhega.</p>
+      <p className="faint mt-2 text-xs">Tip: log last week's numbers every Monday to build a trend.</p>
 
       {series.length > 0 && (
         <div className="mt-4 space-y-1.5">
@@ -86,7 +86,7 @@ export function KpiLog({ project }: { project: Project }) {
       )}
 
       <div className="mt-5 flex gap-2">
-        <input className="input" placeholder="Naya KPI (e.g. GBP calls)" value={newKpi} onChange={(e) => setNewKpi(e.target.value)} />
+        <input className="input" placeholder="New KPI (e.g. GBP calls)" value={newKpi} onChange={(e) => setNewKpi(e.target.value)} />
         <button className="btn-ghost" onClick={addKpi}>
           Add KPI
         </button>
@@ -97,7 +97,7 @@ export function KpiLog({ project }: { project: Project }) {
 
 export function LineChart({ points, color, height = 120 }: { points: { x: string; y: number }[]; color: string; height?: number }) {
   if (points.length < 2) {
-    return <div className="faint grid place-items-center text-sm" style={{ height }}>{points.length ? 'Ek aur entry daalo — trend line ban jayegi' : 'Abhi koi data nahi'}</div>;
+    return <div className="faint grid place-items-center text-sm" style={{ height }}>{points.length ? 'Add one more entry to see the trend line' : 'No data yet'}</div>;
   }
   const W = 320;
   const pad = 8;

@@ -8,8 +8,8 @@ async function summary(): Promise<{ title: string; body: string }> {
   const todays = open.filter((t) => t.due === T);
   const top = todays.sort((a, b) => a.priority - b.priority)[0];
   return {
-    title: `Aaj ke ${todays.length} kaam · ${overdue} pending`,
-    body: top ? `Pehle yeh: ${top.title}` : 'Marketing OS kholo aur aaj ka plan dekho.'
+    title: `${todays.length} tasks today · ${overdue} overdue`,
+    body: top ? `Start with: ${top.title}` : 'Open Marketing OS to see today\'s plan.'
   };
 }
 
@@ -24,9 +24,9 @@ export async function showReminderNow(): Promise<void> {
 }
 
 export async function enableReminders(): Promise<string> {
-  if (!('Notification' in window)) return 'Is browser mein notifications support nahi hain';
+  if (!('Notification' in window)) return 'This browser does not support notifications';
   const perm = await Notification.requestPermission();
-  if (perm !== 'granted') return 'Notification permission nahi mili';
+  if (perm !== 'granted') return 'Notification permission was denied';
   await setSetting('reminderOn', true);
   try {
     const reg = await navigator.serviceWorker?.ready;
@@ -37,7 +37,7 @@ export async function enableReminders(): Promise<string> {
     /* periodic sync not allowed — in-app timer still works */
   }
   const time = await getSetting('reminderTime', '09:00');
-  return `Reminder ON ✅ roz ${time} baje`;
+  return `Reminder on ✅ daily at ${time}`;
 }
 
 export async function disableReminders(): Promise<void> {

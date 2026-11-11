@@ -124,8 +124,8 @@ export default function Calendar() {
         {dayTasks.map((t) => (
           <TaskCard key={t.id} task={t} project={t.projectId ? pmap[t.projectId] : undefined} showDate={false} />
         ))}
-        {selected > T && (byDay[selected] ?? 0) > dayTasks.length && <p className="faint text-xs">+ {(byDay[selected] ?? 0) - dayTasks.length} recurring tasks us din automatically aayenge.</p>}
-        {!dayEvents.length && !(byDay[selected] ?? 0) && <p className="faint text-sm">Is din kuch nahi.</p>}
+        {selected > T && (byDay[selected] ?? 0) > dayTasks.length && <p className="faint text-xs">+ {(byDay[selected] ?? 0) - dayTasks.length} recurring tasks will appear automatically on this day.</p>}
+        {!dayEvents.length && !(byDay[selected] ?? 0) && <p className="faint text-sm">Nothing on this day.</p>}
       </section>
 
       <section className="mt-7">
@@ -133,7 +133,7 @@ export default function Calendar() {
         {upcoming.map((e) => (
           <EventRow key={e.id} e={e} />
         ))}
-        <p className="faint mt-2 text-xs">Dates editable in src/data/calendar.ts · "VERIFY" = lunar date, panchang se confirm karo.</p>
+        <p className="faint mt-2 text-xs">Dates editable in src/data/calendar.ts · "VERIFY" = lunar date, confirm with a panchang.</p>
       </section>
     </div>
   );
@@ -158,16 +158,16 @@ function EventRow({ e }: { e: MarketingEvent }) {
         </div>
       </div>
       {status === 'created' ? (
-        <div className="mt-2 text-xs font-semibold text-emerald-400">✓ Campaign tasks bane hue hain</div>
+        <div className="mt-2 text-xs font-semibold text-emerald-400">✓ Campaign tasks created</div>
       ) : (
         <button
           className="btn-ghost mt-2 !min-h-[40px] w-full text-sm"
           onClick={async () => {
             const n = await createEventCampaign(e, projects);
-            showToast(`${n} campaign tasks ban gaye 🎉`);
+            showToast(`${n} campaign tasks created 🎉`);
           }}
         >
-          Campaign tasks banao (sab projects)
+          Create campaign tasks (all projects)
         </button>
       )}
     </div>

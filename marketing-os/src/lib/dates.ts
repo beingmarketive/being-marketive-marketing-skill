@@ -46,11 +46,11 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export function prettyDate(iso: string): string {
   const t = today();
   const d = diffDays(iso, t);
-  if (d === 0) return 'Aaj';
-  if (d === 1) return 'Kal';
-  if (d === 2) return 'Parso';
-  if (d === -1) return 'Kal (beeta)';
-  if (d < 0) return `${-d} din pehle`;
+  if (d === 0) return 'Today';
+  if (d === 1) return 'Tomorrow';
+  if (d === 2) return 'In 2 days';
+  if (d === -1) return 'Yesterday';
+  if (d < 0) return `${-d} days ago`;
   const dt = fromISO(iso);
   if (d < 7) return WEEKDAY_SHORT[dt.getDay()];
   return `${dt.getDate()} ${MONTHS[dt.getMonth()]}`;

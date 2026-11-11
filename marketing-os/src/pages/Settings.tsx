@@ -52,7 +52,7 @@ export default function Settings() {
 
       <Block title="Profile">
         <label className="block">
-          <span className="label">Aapka naam</span>
+          <span className="label">Your name</span>
           <input className="input" value={name} onChange={(e) => setName(e.target.value)} onBlur={() => setSetting('name', name.trim() || 'Shareef')} />
         </label>
         <div className="mt-4 flex gap-2">
@@ -74,18 +74,18 @@ export default function Settings() {
               await setSetting('reminderTime', reminder);
               if (reminderOn) {
                 await disableReminders();
-                showToast('Reminder band');
+                showToast('Reminder off');
               } else {
                 const r = await enableReminders();
                 showToast(r);
               }
             }}
           >
-            {reminderOn ? 'Reminder ON · band karo' : 'Reminder ON karo'}
+            {reminderOn ? 'Reminder on · turn off' : 'Turn on reminder'}
           </button>
         </div>
         <p className="faint mt-2 text-xs leading-relaxed">
-          Phone par app ko Home screen par install karo (Chrome menu → Add to Home screen). Reminder aapke chosen time par aata hai jab app background mein ho; Android Chrome par installed app ko daily background check bhi milta hai. iPhone par iOS 16.4+ aur installed app zaroori hai.
+          Install the app on your phone first (Chrome menu → Install app / Safari → Add to Home Screen). On Android the installed app can remind you at your chosen time even when it is closed; on iPhone (iOS 16.4+) reminders work best while the app is open or recently used. The morning brief always shows on your first open of the day.
         </p>
       </Block>
 
@@ -111,7 +111,7 @@ export default function Settings() {
             ))}
           </select>
         </label>
-        <p className="faint mt-2 text-xs leading-relaxed">Key sirf is phone ke IndexedDB mein save hoti hai, backup file mein export nahi hoti. Key nahi hai to har AI button "Copy prompt" ban jata hai — ChatGPT/Claude app mein paste kar lo.</p>
+        <p className="faint mt-2 text-xs leading-relaxed">Your key is stored only on this device and is never included in backups. Without a key, every AI button becomes "Copy prompt" — paste it into ChatGPT or the Claude app.</p>
       </Block>
 
       <Block title="Backup">
@@ -121,7 +121,7 @@ export default function Settings() {
             onClick={async () => {
               await downloadBackup();
               await setSetting('lastBackup', new Date().toISOString());
-              showToast('Backup download ho gaya 💾');
+              showToast('Backup downloaded 💾');
             }}
           >
             <Download size={18} /> Export
@@ -139,23 +139,23 @@ export default function Settings() {
             const file = e.target.files?.[0];
             e.target.value = '';
             if (!file) return;
-            if (!confirm('Import karne se current data replace ho jayega. Continue?')) return;
+            if (!confirm('Importing replaces all current data. Continue?')) return;
             try {
               const r = await importBackup(file);
-              showToast(`Restore ho gaya: ${r.projects} projects, ${r.tasks} tasks`);
+              showToast(`Restored: ${r.projects} projects, ${r.tasks} tasks`);
             } catch (err) {
               showToast((err as Error).message);
             }
           }}
         />
-        <p className="faint mt-2 text-xs">{lastBackup ? `Last backup: ${new Date(lastBackup).toLocaleString('en-IN')}` : 'Abhi tak koi backup nahi liya. Har hafte ek baar export karo.'}</p>
+        <p className="faint mt-2 text-xs">{lastBackup ? `Last backup: ${new Date(lastBackup).toLocaleString('en-IN')}` : 'No backup yet. Export one every week.'}</p>
       </Block>
 
       <Block title="Danger zone">
         <button
           className="btn-danger w-full"
           onClick={async () => {
-            if (!confirm('Saara data delete ho jayega (projects, tasks, KPIs). Pehle backup le lo! Continue?')) return;
+            if (!confirm('This deletes all data (projects, tasks, KPIs). Take a backup first! Continue?')) return;
             await resetEverything();
           }}
         >

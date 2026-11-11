@@ -70,8 +70,8 @@ export default function Today() {
       <section className="card mt-4 flex items-center gap-4 p-4">
         <ProgressRing done={doneFiltered.length} total={total} />
         <div className="grid flex-1 grid-cols-3 gap-2 text-center">
-          <Stat value={overdue.length} label="Pending" color="var(--red)" />
-          <Stat value={todays.length} label="Aaj" color="var(--amber)" />
+          <Stat value={overdue.length} label="Overdue" color="var(--red)" />
+          <Stat value={todays.length} label="Today" color="var(--amber)" />
           <div>
             <div className="flex items-center justify-center gap-1 text-2xl font-extrabold">
               <Flame size={20} className={streak > 0 ? 'text-orange-400' : 'faint'} />
@@ -79,7 +79,7 @@ export default function Today() {
             </div>
             <div className="faint text-[11px] font-semibold uppercase">Streak</div>
           </div>
-          <div className="faint col-span-3 text-xs">{minutesLeft > 0 ? `≈ ${Math.floor(minutesLeft / 60) ? Math.floor(minutesLeft / 60) + 'h ' : ''}${minutesLeft % 60}m ka kaam baaki` : 'Aaj ka sab clear 🎉'}</div>
+          <div className="faint col-span-3 text-xs">{minutesLeft > 0 ? `≈ ${Math.floor(minutesLeft / 60) ? Math.floor(minutesLeft / 60) + 'h ' : ''}${minutesLeft % 60}m of work left` : 'All clear for today 🎉'}</div>
         </div>
       </section>
 
@@ -95,7 +95,7 @@ export default function Today() {
       {/* Project filter */}
       <div className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4">
         <button className={`chip ${filter === 'all' ? 'chip-on' : ''}`} onClick={() => setFilter('all')}>
-          Sab
+          All
         </button>
         {projects.map((p) => (
           <button key={p.id} className={`chip ${filter === p.id ? 'chip-on' : ''}`} onClick={() => setFilter(filter === p.id ? 'all' : p.id)}>
@@ -109,19 +109,19 @@ export default function Today() {
         </button>
       </div>
 
-      <Section emoji="🔴" title="Overdue" count={overdue.length} tone="var(--red)" empty="Kuch pending nahi. Badhiya! 💪">
+      <Section emoji="🔴" title="Overdue" count={overdue.length} tone="var(--red)" empty="Nothing overdue. Great work! 💪">
         {overdue.map((t) => (
           <TaskCard key={t.id} task={t} project={t.projectId ? pmap[t.projectId] : undefined} />
         ))}
       </Section>
 
-      <Section emoji="🟡" title="Aaj" count={todays.length} tone="var(--amber)" empty="Aaj ke liye kuch nahi. Library se ek Pro Move uthao 🚀">
+      <Section emoji="🟡" title="Today" count={todays.length} tone="var(--amber)" empty="Nothing scheduled today. Pick a Pro Move from the Library 🚀">
         {todays.map((t) => (
           <TaskCard key={t.id} task={t} project={t.projectId ? pmap[t.projectId] : undefined} showDate={false} />
         ))}
       </Section>
 
-      <Section emoji="🟢" title="Next 7 din" count={next.length} tone="var(--green)" empty="Agle 7 din khaali hain." collapsible>
+      <Section emoji="🟢" title="Next 7 days" count={next.length} tone="var(--green)" empty="Next 7 days are empty." collapsible>
         {next.map((t) => (
           <TaskCard key={t.id} task={t} project={t.projectId ? pmap[t.projectId] : undefined} />
         ))}
@@ -130,7 +130,7 @@ export default function Today() {
       {doneFiltered.length > 0 && (
         <div className="mt-6">
           <button className="section-title faint" onClick={() => setShowDone(!showDone)}>
-            ✅ Ho gaya ({doneFiltered.length}) <ChevronDown size={16} className={`transition ${showDone ? 'rotate-180' : ''}`} />
+            ✅ Done ({doneFiltered.length}) <ChevronDown size={16} className={`transition ${showDone ? 'rotate-180' : ''}`} />
           </button>
           {showDone && (
             <div className="mt-3">
@@ -142,7 +142,7 @@ export default function Today() {
         </div>
       )}
 
-      <p className="faint mt-8 text-center text-xs">Swipe → Ho gaya · Swipe ← Kal pe daalo</p>
+      <p className="faint mt-8 text-center text-xs">Swipe right → Done · Swipe left → Tomorrow</p>
     </div>
   );
 }
@@ -200,12 +200,12 @@ function NextUp({ task, projectName, color }: { task: Task; projectName?: string
         </div>
         <div className="mt-4 grid grid-cols-[1fr_auto_auto] gap-2">
           <button className="btn-primary" onClick={() => actions.complete(task.id)}>
-            <Check size={18} /> Ho gaya
+            <Check size={18} /> Done
           </button>
           <button className="btn-ghost" onClick={() => openFocus(task.id)} aria-label="Focus mode">
             <Timer size={18} />
           </button>
-          <button className="btn-ghost" onClick={() => openStuck(task.id)} aria-label="Main stuck hoon">
+          <button className="btn-ghost" onClick={() => openStuck(task.id)} aria-label="I'm stuck">
             <LifeBuoy size={18} />
           </button>
         </div>

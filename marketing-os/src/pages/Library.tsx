@@ -1,27 +1,26 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { ChevronDown, Plus, Shuffle, Check, RotateCcw } from 'lucide-react';
+import { ChevronDown, Plus, Check, RotateCcw } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PLAYBOOKS } from '../data/playbooks';
 import { PRO_MOVES } from '../data/proMoves';
 import { CHECKLISTS } from '../data/checklists';
-import { INDUSTRIES, getIndustry } from '../data/industries';
-import { CHANNEL_META } from '../data/channels';
 import { PlaybookView } from '../components/PlaybookView';
 import { Sheet } from '../components/Sheet';
 import { AddTaskSheet } from '../components/AddTaskSheet';
 import { AiBox } from '../components/AiBox';
 import { useProjects } from '../lib/hooks';
 import { fillPrompt } from '../data/playbooks';
-import { haptic } from '../lib/ui';
+import { promptVars } from '../lib/brand';
+import { BrandIdeas } from '../components/BrandIdeas';
 import { db, getSetting, setSetting } from '../db/db';
-import type { Checklist, Idea, Playbook, ProMove } from '../types';
+import type { Checklist, Playbook, ProMove } from '../types';
 import type { NewTask } from '../lib/engine';
 
 const TABS = [
   ['playbooks', '📘 Playbooks'],
-  ['ideas', '💡 Idea Bank'],
+  ['ideas', '💡 Brand Ideas'],
   ['pro', '🧠 Pro Moves'],
   ['checklists', '✅ Checklists']
 ] as const;
@@ -31,12 +30,11 @@ export default function Library() {
   const { tab = 'playbooks' } = useParams();
   const nav = useNavigate();
   const [template, setTemplate] = useState<NewTask | null>(null);
-  const [defaultProject, setDefaultProject] = useState<string | null>(null);
 
   return (
     <div className="mx-auto max-w-xl px-4 pb-32 pt-safe">
       <h1 className="pt-5 text-2xl font-extrabold">Library</h1>
-      <p className="faint text-sm">Kabhi stuck mat ho — process, ideas aur advanced moves sab yahan.</p>
+      <p className="faint text-sm">Never get stuck — processes, ideas and advanced tactics in one place.</p>
       <div className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4">
         {TABS.map(([k, l]) => (
           <button key={k} className={`chip ${tab === k ? 'chip-on' : ''}`} onClick={() => nav(`/library/${k}`, { replace: true })}>
@@ -46,18 +44,11 @@ export default function Library() {
       </div>
       <div className="mt-5">
         {(tab as Tab) === 'playbooks' && <Playbooks />}
-        {(tab as Tab) === 'ideas' && (
-          <IdeaBank
-            onAdd={(t, pid) => {
-              setDefaultProject(pid);
-              setTemplate(t);
-            }}
-          />
-        )}
+        {(tab as Tab) === 'ideas' && <IdeaBank />}
         {(tab as Tab) === 'pro' && <ProMoves onAdd={(t) => setTemplate(t)} />}
         {(tab as Tab) === 'checklists' && <Checklists onAdd={(t) => setTemplate(t)} />}
       </div>
-      <AddTaskSheet template={template} defaultProjectId={defaultProject} onClose={() => setTemplate(null)} />
+      <AddTaskSheet template={template} onClose={() => setTemplate(null)} />
     </div>
   );
 }
@@ -88,7 +79,7 @@ function Playbooks() {
             <PlaybookView playbook={open} />
             <div className="mt-5">
               <label className="mb-2 block">
-                <span className="label">AI prompt kis project ke liye?</span>
+                <span className="label">AI prompt for which project?</span>
                 <select className="input" value={pid} onChange={(e) => setPid(e.target.value)}>
                   <option value="">General</option>
                   {projects.map((p) => (
@@ -99,13 +90,7 @@ function Playbooks() {
                 </select>
               </label>
               <AiBox
-                prompt={fillPrompt(open.aiPrompt, {
-                  project: project?.name ?? '[brand]',
-                  industry: getIndustry(project?.industryId)?.name ?? '[industry]',
-                  task: open.name,
-                  website: project?.website ?? '[website]',
-                  notes: project?.notes ?? 'none'
-                })}
+                prompt={fillPrompt(open.aiPrompt, promptVars(project, open.name))}
               />
             </div>
           </>
@@ -115,86 +100,23 @@ function Playbooks() {
   );
 }
 
-/* ---------------- Idea Bank ---------------- */
+/* ---------------- Idea Bank (brand-specific) ---------------- */
 
-function IdeaBank({ onAdd }: { onAdd: (t: NewTask, projectId: string | null) => void }) {
+function IdeaBank() {
   const projects = useProjects();
-  const [scope, setScope] = useState<string>(projects[0]?.id ?? 'agency');
-  const project = projects.find((p) => p.id === scope);
-  const industry = getIndustry(project ? project.industryId : scope) ?? INDUSTRIES[0];
-  const [idx, setIdx] = useState(() => Math.floor(Math.random() * industry.ideas.length));
-  const [showAll, setShowAll] = useState(false);
-  const idea = industry.ideas[idx % industry.ideas.length];
-
-  const shuffle = () => {
-    haptic(8);
-    let n = idx;
-    while (industry.ideas.length > 1 && n === idx) n = Math.floor(Math.random() * industry.ideas.length);
-    setIdx(n);
-  };
-  const toTask = (i: Idea): NewTask => ({ title: i.title, channel: i.channel, estMinutes: 45, priority: 2, notes: `Format: ${i.format}`, source: 'idea', startsChain: i.channel === 'Reels' ? 'reel-followup' : i.channel === 'Blog' ? 'blog-pipeline' : undefined });
-
+  const [scope, setScope] = useState<string>('');
+  const pid = scope || projects[0]?.id;
+  if (!pid) return <p className="faint text-sm">Add a project first.</p>;
   return (
     <>
-      <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+      <div className="no-scrollbar -mx-4 mb-4 flex gap-2 overflow-x-auto px-4">
         {projects.map((p) => (
-          <button key={p.id} className={`chip ${scope === p.id ? 'chip-on' : ''}`} onClick={() => setScope(p.id)}>
+          <button key={p.id} className={`chip ${pid === p.id ? 'chip-on' : ''}`} onClick={() => setScope(p.id)}>
             <span className="h-2 w-2 rounded-full" style={{ background: p.color }} /> {p.name}
           </button>
         ))}
       </div>
-      <select className="input mt-3" value={project ? '' : scope} onChange={(e) => e.target.value && setScope(e.target.value)}>
-        <option value="">…ya koi bhi industry chuno</option>
-        {INDUSTRIES.map((i) => (
-          <option key={i.id} value={i.id}>
-            {i.emoji} {i.name} ({i.ideas.length} ideas)
-          </option>
-        ))}
-      </select>
-
-      <div className="relative mt-4 overflow-hidden rounded-3xl p-[1.5px]" style={{ background: 'var(--grad)' }}>
-        <div className="rounded-[22px] p-5" style={{ background: 'var(--card-solid)' }}>
-          <div className="faint text-xs font-bold uppercase tracking-wider">
-            {industry.emoji} {industry.name}
-          </div>
-          <AnimatePresence mode="wait">
-            <motion.div key={idea.title} initial={{ opacity: 0, rotateX: -60, y: 10 }} animate={{ opacity: 1, rotateX: 0, y: 0 }} exit={{ opacity: 0, rotateX: 60, y: -10 }} transition={{ duration: 0.25 }}>
-              <div className="mt-3 text-xl font-bold leading-snug">{idea.title}</div>
-              <div className="muted mt-2 text-sm">
-                {CHANNEL_META[idea.channel].emoji} {idea.channel} · {idea.format}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-          <div className="mt-5 grid grid-cols-2 gap-2">
-            <button className="btn-ghost" onClick={shuffle}>
-              <Shuffle size={18} /> Idea Shuffle
-            </button>
-            <button className="btn-primary" onClick={() => onAdd(toTask(idea), project?.id ?? null)}>
-              <Plus size={18} /> Task banao
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <button className="section-title faint mt-6" onClick={() => setShowAll(!showAll)}>
-        Saare ideas ({industry.ideas.length}) <ChevronDown size={16} className={`transition ${showAll ? 'rotate-180' : ''}`} />
-      </button>
-      {showAll && (
-        <div className="mt-3 space-y-2">
-          {industry.ideas.map((i) => (
-            <div key={i.title} className="card flex items-center gap-3 p-3">
-              <span className="text-lg">{CHANNEL_META[i.channel].emoji}</span>
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold leading-snug">{i.title}</div>
-                <div className="faint text-xs">{i.format}</div>
-              </div>
-              <button aria-label="Add as task" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl" style={{ background: 'var(--input)' }} onClick={() => onAdd(toTask(i), project?.id ?? null)}>
-                <Plus size={18} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+      <BrandIdeas key={pid} projectId={pid} />
     </>
   );
 }
@@ -216,7 +138,7 @@ function ProMoves({ onAdd }: { onAdd: (t: NewTask) => void }) {
           </button>
         ))}
       </div>
-      <p className="faint mt-3 text-xs">{PRO_MOVES.length} advanced tactics — har hafte ek try karo.</p>
+      <p className="faint mt-3 text-xs">{PRO_MOVES.length} advanced tactics — try one every week.</p>
       <div className="mt-3 space-y-2.5">
         {list.map((m) => (
           <div key={m.id} className="card overflow-hidden">
@@ -279,7 +201,7 @@ function Checklists({ onAdd }: { onAdd: (t: NewTask) => void }) {
         })}
       </div>
       <Sheet open={!!open} onClose={() => setOpen(null)} title={open ? `${open.emoji} ${open.name}` : ''} full footer={open && <button className="btn-primary mb-1 w-full" onClick={() => onAdd({ title: `${open.name} checklist`, channel: open.id === 'gbp-optimisation' ? 'GBP' : open.id === 'reel-prepublish' ? 'Reels' : open.id === 'ad-launch' ? 'Meta Ads' : open.id === 'monthly-report' ? 'Reporting' : open.id === 'website-launch' ? 'Website' : 'SEO', estMinutes: 60, priority: 2, subtasks: open.sections.flatMap((s) => s.items), source: 'checklist' })}>
-        <Plus size={18} /> Project ke liye task banao
+        <Plus size={18} /> Create task for a project
       </button>}>
         {open && <ChecklistBody checklist={open} />}
       </Sheet>

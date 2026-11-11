@@ -43,18 +43,18 @@ export function AiBox({ prompt, onSaveToNotes, title = 'AI prompt' }: { prompt: 
           className="btn-ghost"
           onClick={async () => {
             await copyText(text);
-            showToast('Prompt copy ho gaya 📋 — ChatGPT/Claude mein paste karo');
+            showToast('Prompt copied 📋 — paste it into ChatGPT or Claude');
           }}
         >
           <Copy size={16} /> Copy prompt
         </button>
         {keyOk ? (
           <button className="btn-primary" onClick={run} disabled={busy}>
-            {busy ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />} {busy ? 'Likh raha hoon…' : 'Generate'}
+            {busy ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />} {busy ? 'Writing…' : 'Generate'}
           </button>
         ) : (
           <Link to="/settings" className="btn-ghost text-sm">
-            🔑 Key add karo
+            🔑 Add API key
           </Link>
         )}
       </div>
@@ -69,7 +69,7 @@ export function AiBox({ prompt, onSaveToNotes, title = 'AI prompt' }: { prompt: 
               className="btn-ghost"
               onClick={async () => {
                 await copyText(out);
-                showToast('Copy ho gaya 📋');
+                showToast('Copied 📋');
               }}
             >
               <Copy size={16} /> Copy
@@ -79,10 +79,10 @@ export function AiBox({ prompt, onSaveToNotes, title = 'AI prompt' }: { prompt: 
                 className="btn-ghost"
                 onClick={() => {
                   onSaveToNotes(out);
-                  showToast('Task notes mein save ho gaya');
+                  showToast('Saved to task notes');
                 }}
               >
-                <NotebookPen size={16} /> Notes mein
+                <NotebookPen size={16} /> Save to notes
               </button>
             )}
           </div>

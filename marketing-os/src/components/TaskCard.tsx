@@ -31,10 +31,10 @@ export function TaskCard({ task, project, showDate = true }: { task: Task; proje
     <motion.div layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0, marginBottom: 0 }} transition={{ type: 'spring', damping: 28, stiffness: 300 }} className="relative mb-2.5 overflow-hidden rounded-2xl">
       {/* swipe backgrounds */}
       <motion.div style={{ opacity: doneOpacity }} className="absolute inset-0 flex items-center rounded-2xl bg-emerald-500 pl-5 font-bold text-white">
-        <Check size={20} className="mr-2" /> Ho gaya
+        <Check size={20} className="mr-2" /> Done
       </motion.div>
       <motion.div style={{ opacity: snoozeOpacity }} className="absolute inset-0 flex items-center justify-end rounded-2xl bg-amber-500 pr-5 font-bold text-white">
-        Kal <AlarmClockOff size={20} className="ml-2" />
+        Tomorrow <AlarmClockOff size={20} className="ml-2" />
       </motion.div>
 
       <motion.div

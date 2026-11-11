@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { DayLog, HashtagSet, HistoryEntry, KpiEntry, Project, SettingRow, SwipeItem, Task, UserPrompt } from '../types';
+import type { BrandIdea, DayLog, HashtagSet, HistoryEntry, KpiEntry, Project, SettingRow, SwipeItem, Task, UserPrompt } from '../types';
 
 export class MarketingOSDB extends Dexie {
   projects!: Table<Project, string>;
@@ -11,6 +11,7 @@ export class MarketingOSDB extends Dexie {
   swipes!: Table<SwipeItem, string>;
   hashtags!: Table<HashtagSet, string>;
   prompts!: Table<UserPrompt, string>;
+  ideas!: Table<BrandIdea, string>;
 
   constructor() {
     super('marketing-os');
@@ -25,6 +26,7 @@ export class MarketingOSDB extends Dexie {
       hashtags: 'id, projectId, createdAt',
       prompts: 'id, createdAt'
     });
+    this.version(2).stores({ ideas: 'id, projectId, createdAt' });
   }
 }
 

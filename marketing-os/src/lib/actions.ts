@@ -11,16 +11,16 @@ export function useTaskActions() {
       const spawned = await completeTask(id);
       const recurring = spawned.filter((s) => s.source === 'recurring').length;
       const chain = spawned.length - recurring;
-      const parts = ['Ho gaya! ✅'];
+      const parts = ['Done! ✅'];
       if (chain) parts.push(`+${chain} next step${chain > 1 ? 's' : ''}`);
-      else if (recurring) parts.push('agla wala set 🔁');
+      else if (recurring) parts.push('next one scheduled 🔁');
       showToast(parts.join(' · '), { label: 'Undo', run: () => undoComplete(id) });
     },
     async snooze(id: string) {
       haptic(8);
       const before = await db.tasks.get(id);
       await snoozeTask(id, 1);
-      showToast('Kal pe shift kiya ⏭', before ? { label: 'Undo', run: () => updateTask(id, { due: before.due, dueTime: before.dueTime, snoozes: before.snoozes }) } : undefined);
+      showToast('Moved to tomorrow ⏭', before ? { label: 'Undo', run: () => updateTask(id, { due: before.due, dueTime: before.dueTime, snoozes: before.snoozes }) } : undefined);
     }
   };
 }

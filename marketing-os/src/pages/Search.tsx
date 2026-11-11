@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search as SearchIcon } from 'lucide-react';
 import { db } from '../db/db';
-import { INDUSTRIES } from '../data/industries';
 import { PLAYBOOKS } from '../data/playbooks';
 import { PRO_MOVES } from '../data/proMoves';
 import { CHECKLISTS } from '../data/checklists';
@@ -31,6 +30,7 @@ export default function Search() {
   const [template, setTemplate] = useState<NewTask | null>(null);
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) ?? [];
   const swipes = useLiveQuery(() => db.swipes.toArray(), []) ?? [];
+  const ideas = useLiveQuery(() => db.ideas.toArray(), []) ?? [];
 
   const hits = useMemo<Hit[]>(() => {
     const s = q.trim().toLowerCase();
@@ -47,13 +47,12 @@ export default function Search() {
     for (const p of PLAYBOOKS) if (m(`${p.name} ${p.summary} ${p.match.join(' ')} ${p.steps.join(' ')}`)) out.push({ key: 'pb' + p.id, group: 'Playbooks', title: `${p.emoji} ${p.name}`, sub: p.summary, go: () => nav('/library/playbooks') });
     for (const pm of PRO_MOVES) if (m(`${pm.name} ${pm.why} ${pm.how.join(' ')}`)) out.push({ key: 'pm' + pm.id, group: 'Pro Moves', title: pm.name, sub: pm.why, go: () => setTemplate({ ...pm.task, subtasks: pm.how, notes: `Why: ${pm.why}`, source: 'promove' }) });
     for (const c of CHECKLISTS) if (m(`${c.name} ${c.description} ${c.sections.flatMap((x) => x.items).join(' ')}`)) out.push({ key: 'cl' + c.id, group: 'Checklists', title: `${c.emoji} ${c.name}`, sub: c.description, go: () => nav('/library/checklists') });
-    for (const ind of INDUSTRIES)
-      for (const i of ind.ideas)
-        if (m(`${i.title} ${i.format} ${i.channel} ${ind.name}`))
-          out.push({ key: ind.id + i.title, group: 'Ideas', title: i.title, sub: `${CHANNEL_META[i.channel].emoji} ${i.channel} · ${ind.name}`, go: () => setTemplate({ title: i.title, channel: i.channel, estMinutes: 45, notes: `Format: ${i.format}`, source: 'idea' }) });
+    for (const i of ideas)
+      if (m(`${i.title} ${i.format} ${i.channel} ${pmap[i.projectId]?.name ?? ''}`))
+        out.push({ key: i.id, group: 'Brand ideas', title: i.title, sub: `${CHANNEL_META[i.channel].emoji} ${i.channel} · ${pmap[i.projectId]?.name ?? ''}`, go: () => setTemplate({ title: i.title, channel: i.channel, projectId: i.projectId, estMinutes: 45, notes: `Format: ${i.format}`, source: 'idea' }) });
     for (const sw of swipes) if (m(`${sw.title} ${sw.note} ${sw.tags.join(' ')} ${sw.kind}`)) out.push({ key: sw.id, group: 'Swipe file', title: sw.title, sub: sw.note || sw.kind, go: () => nav('/tools/swipe') });
     return out.slice(0, 120);
-  }, [q, tasks, swipes, pmap, nav, openTask]);
+  }, [q, tasks, swipes, ideas, pmap, nav, openTask]);
 
   const groups = Array.from(new Set(hits.map((h) => h.group)));
 
@@ -84,7 +83,7 @@ export default function Search() {
           </div>
         </section>
       ))}
-      {q.trim().length >= 2 && !hits.length && <p className="faint mt-10 text-center">Kuch nahi mila "{q}" ke liye.</p>}
+      {q.trim().length >= 2 && !hits.length && <p className="faint mt-10 text-center">No results for "{q}".</p>}
       {q.trim().length < 2 && <p className="faint mt-10 text-center text-sm">Try: "review", "schema", "diwali", "reel hook", "Cloudforz"</p>}
       <AddTaskSheet template={template} onClose={() => setTemplate(null)} />
     </div>

@@ -3,7 +3,7 @@ import { CalendarDays, FolderKanban, LibraryBig, Sun, Wrench } from 'lucide-reac
 import { motion } from 'framer-motion';
 
 const TABS = [
-  { to: '/', label: 'Aaj', icon: Sun },
+  { to: '/', label: 'Today', icon: Sun },
   { to: '/projects', label: 'Projects', icon: FolderKanban },
   { to: '/library', label: 'Library', icon: LibraryBig },
   { to: '/calendar', label: 'Calendar', icon: CalendarDays },

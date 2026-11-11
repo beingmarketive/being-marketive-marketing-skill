@@ -40,6 +40,14 @@ describe('parseQuickAdd', () => {
   it('detects chain', () => {
     expect(parseQuickAdd('BM blog likhna: GBP guide', projects).startsChain).toBe('blog-pipeline');
   });
+  it('English phrases', () => {
+    expect(parseQuickAdd('Trendy Prints GBP post tomorrow', projects)).toMatchObject({ due: '2026-11-11', projectId: 'trendy-prints', title: 'GBP post' });
+    expect(parseQuickAdd('Cloudforz LinkedIn post every monday', projects).recurrence).toEqual({ type: 'weekly', days: [1] });
+    expect(parseQuickAdd('Marketomate carousel daily', projects).recurrence).toEqual({ type: 'daily' });
+    expect(parseQuickAdd('14mittech audit next week', projects).due).toBe('2026-11-16');
+    expect(parseQuickAdd('rn world reel friday 5pm', projects)).toMatchObject({ due: '2026-11-13', dueTime: '17:00' });
+    expect(parseQuickAdd('BM blog in 3 days', projects).due).toBe('2026-11-13');
+  });
   it('single-channel project default', () => {
     expect(parseQuickAdd('trendy prints photos upload', projects).channel).toBe('GBP');
   });

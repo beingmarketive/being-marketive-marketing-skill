@@ -1,6 +1,6 @@
 # Marketing OS
 
-Shareef's daily marketing work operating system. Every day it shows **🔴 Overdue · 🟡 Aaj · 🟢 Next**, so work across all brands never stops.
+Shareef's daily marketing work operating system. Every day it shows **🔴 Overdue · 🟡 Today · 🟢 Next 7 days**, so work across all brands never stops.
 
 React + Vite + TypeScript + Tailwind · installable PWA · local-first (IndexedDB via Dexie) · optional Claude AI.
 
@@ -22,9 +22,9 @@ marketing-os/
 ├─ public/icons/           app icons (PWA)
 ├─ src/
 │  ├─ data/                ← ALL marketing knowledge. Edit/extend freely.
-│  │  ├─ projects.ts       your 6 pre-seeded projects (aliases used by quick add)
-│  │  ├─ industries/       15 industry packs (recurring tasks, 15+ ideas, KPIs each)
-│  │  ├─ playbooks/        22 "Main stuck hoon" playbooks (steps, tips, mistakes, template, AI prompt)
+│  │  ├─ projects.ts       your 6 brands: brief, brand-specific recurring tasks, 20 brand ideas each
+│  │  ├─ industries/       15 industry packs (recurring tasks + KPIs for new projects)
+│  │  ├─ playbooks/        22 "I'm stuck" playbooks (steps, tips, mistakes, template, AI prompt)
 │  │  ├─ chains.ts         chain workflows (blog → publish → index → repurpose, reel → reply → insights…)
 │  │  ├─ proMoves.ts       33 advanced tactics
 │  │  ├─ checklists.ts     6 checklists
@@ -44,7 +44,9 @@ marketing-os/
 - **Recurring**: each recurring task has exactly one open instance. Completing it creates the next one. Missed days roll into **one** overdue instance (the latest missed date) and skipped days are logged as "missed" for the health score — no pile-up.
 - **Chains**: a task with "Done hone ke baad (chain)" set creates the next step when completed. Set a *Topic* (e.g. the blog title) so next steps are named properly.
 - **Health score**: on-time % of recurring tasks over the last 14 days.
-- **Quick add**: `Trendy Prints GBP post kal`, `BM blog likhna aaj urgent`, `Cloudforz LinkedIn post har somvar`, `RN World reel parso 5 baje`, `report har mahine 1 dec`, `backup har 3 din`.
+- **Quick add**: `Trendy Prints GBP post tomorrow`, `BM write blog today urgent`, `Cloudforz LinkedIn post every monday`, `RN World reel friday 5pm`, `report monthly 1 dec`, `backup every 3 days`. (Hindi words like kal / aaj / har roz are still understood.)
+- **Brand ideas, not generic ideas**: each project has its own idea bank (Library → Brand Ideas, or the project's 💡 Ideas tab). Your 6 brands come with 20 ideas each (`src/data/projects.ts`). For a new project, fill the **brand brief** and tap *Generate 20 brand ideas* (with a Claude key) — or copy the brand prompt into ChatGPT/Claude and paste the answer back to import.
+- **Add your own projects**: Projects → **Add project** (or the dashed "Add a new project" card). Pick the industry, fill the brand brief, and the app schedules recurring tasks and opens the Ideas tab. Projects can be edited, archived or deleted.
 
 ## Deploy free (Vercel — recommended)
 
@@ -59,7 +61,7 @@ marketing-os/
 
 - **Android (Chrome)**: open the URL → menu ⋮ → **Install app** / Add to Home screen.
 - **iPhone (Safari)**: open the URL → Share → **Add to Home Screen**.
-- Then Tools → Settings → set reminder time → **Reminder ON karo** (allow notifications).
+- Then Tools → Settings → set reminder time → **Turn on reminder** (allow notifications).
 
 ## Data & backup
 

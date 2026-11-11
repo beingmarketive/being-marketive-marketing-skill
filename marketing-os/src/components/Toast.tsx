@@ -22,7 +22,7 @@ export function Toast() {
                 style={{ color: '#a5b4fc' }}
                 onClick={() => {
                   toast.action!.run();
-                  showToast('Undo ho gaya ↩︎');
+                  showToast('Undone ↩︎');
                 }}
               >
                 {toast.action.label}

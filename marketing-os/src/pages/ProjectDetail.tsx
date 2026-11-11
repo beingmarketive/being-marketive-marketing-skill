@@ -1,7 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { ArrowLeft, Archive, Pencil, Plus } from 'lucide-react';
+import { ArrowLeft, Archive, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { BrandIdeas } from '../components/BrandIdeas';
 import { db } from '../db/db';
 import { TaskCard } from '../components/TaskCard';
 import { ProjectForm } from '../components/ProjectForm';
@@ -20,7 +21,8 @@ export default function ProjectDetail() {
   const T = useToday();
   const { newTask, openTask, showToast } = useUI();
   const [edit, setEdit] = useState(false);
-  const [tab, setTab] = useState<'tasks' | 'recurring' | 'kpi'>('tasks');
+  const [params] = useSearchParams();
+  const [tab, setTab] = useState<'tasks' | 'ideas' | 'recurring' | 'kpi'>((params.get('tab') as 'ideas') || 'tasks');
   const project = useLiveQuery(() => db.projects.get(id), [id]);
   const tasks = useLiveQuery(() => db.tasks.where('projectId').equals(id).filter((t) => t.status === 'todo').toArray(), [id]) ?? [];
   const health = useLiveQuery(() => healthScores().then((h) => h[id]), [id, T]);
@@ -44,7 +46,7 @@ export default function ProjectDetail() {
           <button
             aria-label="Archive project"
             onClick={async () => {
-              if (!confirm(`${project.name} archive karein? Uske tasks Today mein dikhte rahenge jab tak delete na karo.`)) return;
+              if (!confirm(`Archive ${project.name}? Its open tasks stay on Today until you delete them.`)) return;
               await db.projects.update(id, { archived: true });
               showToast('Project archived');
               nav('/projects');
@@ -53,6 +55,24 @@ export default function ProjectDetail() {
             style={{ background: 'var(--input)' }}
           >
             <Archive size={18} />
+          </button>
+          <button
+            aria-label="Delete project"
+            onClick={async () => {
+              if (!confirm(`Delete ${project.name} permanently? Its tasks, ideas and KPI entries will be deleted too.`)) return;
+              await db.transaction('rw', [db.projects, db.tasks, db.ideas, db.kpis], async () => {
+                await db.tasks.where('projectId').equals(id).delete();
+                await db.ideas.where('projectId').equals(id).delete();
+                await db.kpis.where('projectId').equals(id).delete();
+                await db.projects.delete(id);
+              });
+              showToast('Project deleted');
+              nav('/projects');
+            }}
+            className="grid h-11 w-11 place-items-center rounded-full text-rose-400"
+            style={{ background: 'var(--input)' }}
+          >
+            <Trash2 size={18} />
           </button>
         </div>
       </header>
@@ -111,13 +131,13 @@ export default function ProjectDetail() {
         {project.notes && <p className="muted mt-3 whitespace-pre-wrap text-sm">{project.notes}</p>}
       </section>
 
-      <div className="mt-5 flex gap-2">
-        {(['tasks', 'recurring', 'kpi'] as const).map((t) => (
+      <div className="no-scrollbar -mx-4 mt-5 flex gap-2 overflow-x-auto px-4">
+        {(['tasks', 'ideas', 'recurring', 'kpi'] as const).map((t) => (
           <button key={t} className={`chip ${tab === t ? 'chip-on' : ''}`} onClick={() => setTab(t)}>
-            {t === 'tasks' ? `Open (${tasks.length})` : t === 'recurring' ? 'Recurring' : 'KPI log'}
+            {t === 'tasks' ? `Open (${tasks.length})` : t === 'ideas' ? '💡 Ideas' : t === 'recurring' ? 'Recurring' : 'KPI log'}
           </button>
         ))}
-        <button className="chip ml-auto" onClick={() => newTask({ projectId: id })}>
+        <button className="chip" onClick={() => newTask({ projectId: id })}>
           <Plus size={14} /> Task
         </button>
       </div>
@@ -127,7 +147,7 @@ export default function ProjectDetail() {
           (tasks.length ? (
             [...tasks].sort(sortTasks).map((t) => <TaskCard key={t.id} task={t} />)
           ) : (
-            <div className="faint py-8 text-center text-sm">Koi open task nahi.</div>
+            <div className="faint py-8 text-center text-sm">No open tasks.</div>
           ))}
         {tab === 'recurring' && (
           <div className="space-y-2">
@@ -142,9 +162,10 @@ export default function ProjectDetail() {
                 <span className="faint shrink-0 text-xs">Next: {prettyDate(t.due)}</span>
               </button>
             ))}
-            {!recurring.length && <div className="faint py-8 text-center text-sm">Koi recurring task nahi. Edit → industry pack apply karo.</div>}
+            {!recurring.length && <div className="faint py-8 text-center text-sm">No recurring tasks. Edit the project to apply an industry pack.</div>}
           </div>
         )}
+        {tab === 'ideas' && <BrandIdeas projectId={id} />}
         {tab === 'kpi' && <KpiLog project={project} />}
       </div>
 
